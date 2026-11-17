@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducing Lab Owl</title>
+  <style>
+    body { margin: 0; }
+    #introducing-lab-owl, #introducing-lab-owl * {
+      box-sizing: border-box;
+      font-family: Arial, "Liberation Sans", sans-serif !important;
+    }
+    #introducing-lab-owl {
+      color: #000000;
+      background: #FFFFFF;
+      font-size: 16px !important;
+      line-height: 1.55;
+    }
+    #introducing-lab-owl h1, #introducing-lab-owl h2, #introducing-lab-owl h3,
+    #introducing-lab-owl p, #introducing-lab-owl ul { margin: 0; }
+    #introducing-lab-owl :is(p, li, .banner-label) { font-size: 16px !important; }
+    #introducing-lab-owl h1 { font-size: 36px !important; line-height: 1.1; }
+    #introducing-lab-owl h2 { font-size: 24px !important; line-height: 1.2; color: #002855; }
+    #introducing-lab-owl h3 { font-size: 20px !important; line-height: 1.25; color: #002855; }
+    #introducing-lab-owl strong { color: #0070F0; }
+    #introducing-lab-owl .banner {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #002855, #0070F0);
+      color: #FFFFFF;
+      text-align: center;
+    }
+    #introducing-lab-owl .banner-pattern { position: absolute; inset: 0; opacity: 0.05; pointer-events: none; }
+    #introducing-lab-owl .banner-content { position: relative; padding: 5rem 1.5rem; }
+    #introducing-lab-owl .banner-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 999px;
+      background: rgba(151, 225, 82, 0.2);
+      color: #97E152;
+      font-weight: 500;
+    }
+    #introducing-lab-owl .banner-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #97E152; }
+    #introducing-lab-owl .banner p { max-width: 48rem; margin: 1.5rem auto 0; color: rgba(255, 255, 255, 0.95); }
+    #introducing-lab-owl .banner-wave { display: block; width: 100%; margin-bottom: -1px; }
+    #introducing-lab-owl main { max-width: 72rem; padding: 0 1.5rem 2rem; margin: 0 auto; }
+    #introducing-lab-owl main > section { padding-block: 0.75rem; }
+    #introducing-lab-owl main > section + section { padding-top: 2.75rem; }
+    #introducing-lab-owl .section-heading { text-align: center; }
+    #introducing-lab-owl .section-divider {
+      width: 5rem;
+      height: 3px;
+      margin: 0.75rem auto 1.25rem;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #002855 0%, #0070F0 50%, #97E152 100%);
+    }
+    #introducing-lab-owl .content { max-width: 48rem; margin-inline: auto; }
+    #introducing-lab-owl .flow > * + * { margin-top: 0.9rem; }
+    #introducing-lab-owl .flow > * + .panel,
+    #introducing-lab-owl .flow > .panel + * { margin-top: 1.25rem; }
+    #introducing-lab-owl .panel {
+      padding: 1.5rem;
+      border-left: 4px solid #0070F0;
+      border-radius: 1rem;
+      background: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 40, 85, 0.1);
+    }
+    #introducing-lab-owl .lab-owl-panel { border-left-color: #97E152; }
+    #introducing-lab-owl .activity-list { padding-left: 1.4rem; }
+    #introducing-lab-owl .activity-list li + li { margin-top: 0.6rem; }
+    #introducing-lab-owl .activity-list li::marker { color: #002855; }
+    @media (min-width: 768px) {
+      #introducing-lab-owl h1 { font-size: 48px !important; }
+      #introducing-lab-owl h2 { font-size: 30px !important; }
+    }
+    @media (min-width: 1024px) {
+      #introducing-lab-owl h1 { font-size: 60px !important; }
+    }
+    #introducing-lab-owl button { font: inherit; cursor: pointer; }
+    #introducing-lab-owl :is(button, [tabindex]):focus-visible { outline: 3px solid #0070F0; outline-offset: 3px; }
+    #introducing-lab-owl .owl-letters { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.65rem 1rem; }
+    #introducing-lab-owl .owl-letter-group { display: flex; gap: 0.45rem; }
+    #introducing-lab-owl .owl-letter {
+      width: clamp(2.55rem, 8vw, 4.5rem);
+      aspect-ratio: 1;
+      padding: 0;
+      border: 0;
+      border-radius: 0.75rem;
+      background: var(--stage-color);
+      color: #fff;
+      font-size: clamp(1.5rem, 5vw, 2.75rem);
+      font-weight: 700;
+    }
+    #introducing-lab-owl .owl-letter[aria-expanded="true"] { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #002855; }
+    #introducing-lab-owl .owl-letter.owl-dark-text { color: #002855; }
+    #introducing-lab-owl .owl-progress { text-align: center; color: #002855; }
+    #introducing-lab-owl .owl-stage-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 0.9rem; }
+    #introducing-lab-owl .owl-stage-card,
+    #introducing-lab-owl .owl-choice,
+    #introducing-lab-owl .owl-stage-nav button {
+      display: grid;
+      gap: 0.4rem;
+      border: 1px solid #bed3eb;
+      border-radius: 0.65rem;
+      background: #fff;
+      color: #002855;
+      padding: 0.75rem 0.9rem;
+      text-align: left;
+    }
+    #introducing-lab-owl .owl-stage-card[hidden] { display: none; }
+    #introducing-lab-owl .owl-stage-card { align-self: start; border-left: 4px solid var(--stage-color); }
+    #introducing-lab-owl .owl-example-overlay[hidden] { display: none; }
+    #introducing-lab-owl .owl-example-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      background: rgba(0, 40, 85, 0.62);
+    }
+    #introducing-lab-owl .owl-example-popup {
+      width: min(100%, 34rem);
+      min-height: 0;
+      max-height: 100%;
+      overflow: auto;
+      overscroll-behavior: contain;
+      padding: clamp(1rem, 4vw, 1.5rem);
+      border-left: 5px solid #97E152;
+      border-radius: 0.85rem;
+      background: #fff;
+      box-shadow: 0 14px 48px rgba(0, 40, 85, 0.25);
+    }
+    #introducing-lab-owl .owl-example-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    #introducing-lab-owl .owl-example-popup li {
+      background: #edf5ff;
+      border-radius: 0.5rem;
+      padding: 0.65rem 0.8rem;
+    }
+    #introducing-lab-owl .owl-example-popup ul { list-style: none; }
+    #introducing-lab-owl .owl-example-popup li + li { margin-top: 0.5rem; }
+    #introducing-lab-owl .owl-choice:hover:not(:disabled),
+    #introducing-lab-owl .owl-stage-nav button:hover { background: #edf5ff; }
+    #introducing-lab-owl .owl-card-title { font-weight: 700; }
+    #introducing-lab-owl .owl-card-link {
+      justify-self: start;
+      background: transparent;
+      border: 0;
+      padding: 0.2rem 0;
+      color: #0057b8;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+    #introducing-lab-owl .owl-practice-layout {
+      display: grid;
+      gap: 1.25rem;
+      align-items: start;
+      max-width: 66rem;
+      margin-inline: auto;
+    }
+    #introducing-lab-owl .owl-practice-sidebar {
+      min-width: 0;
+      padding: 1rem;
+      border: 1px solid #d8e7f5;
+      border-radius: 0.85rem;
+      background: #f4f8fd;
+    }
+    #introducing-lab-owl .owl-stage-nav {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+    @media (min-width: 560px) {
+      #introducing-lab-owl .owl-stage-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 800px) {
+      #introducing-lab-owl .owl-practice-layout { grid-template-columns: minmax(12.5rem, 0.95fr) minmax(0, 3fr); }
+      #introducing-lab-owl .owl-stage-nav { grid-template-columns: minmax(0, 1fr); }
+    }
+    #introducing-lab-owl .owl-stage-nav button {
+      align-content: center;
+      padding: 0.65rem;
+      text-align: center;
+      font-size: 0.9375rem;
+      line-height: 1.3;
+    }
+    @media (min-width: 800px) {
+      #introducing-lab-owl .owl-stage-nav button { text-align: left; }
+    }
+    #introducing-lab-owl .owl-stage-nav button[aria-pressed="true"] {
+      border-color: #002855;
+      background: #002855;
+      color: #fff;
+      font-weight: 700;
+    }
+    #introducing-lab-owl .owl-stage-reference {
+      border: 1px solid #bed3eb;
+      border-radius: 0.65rem;
+      padding: 0.7rem 0.9rem;
+      background: #f4f8fd;
+    }
+    #introducing-lab-owl .owl-stage-reference summary { color: #002855; font-weight: 700; cursor: pointer; }
+    #introducing-lab-owl .owl-stage-reference[open] summary { margin-bottom: 0.75rem; }
+    #introducing-lab-owl .owl-scenario {
+      border: 1px solid #bed3eb;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 40, 85, 0.1);
+    }
+    #introducing-lab-owl .owl-scenario-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem clamp(0.8rem, 3vw, 1.5rem);
+      border-bottom: 4px solid #97E152;
+      background: #002855;
+      color: #fff;
+    }
+    #introducing-lab-owl .owl-scenario-header h3 { color: #fff; }
+    #introducing-lab-owl #owl-step-count { margin-top: 0.25rem; }
+    #introducing-lab-owl .owl-scenario-body { padding: clamp(0.8rem, 3vw, 1.5rem); }
+    #introducing-lab-owl #owl-responses { padding-top: 1rem; border-top: 1px solid #bed3eb; }
+    #introducing-lab-owl .owl-action {
+      padding: 0.5rem 0.85rem;
+      border: 1px solid #0057b8;
+      border-radius: 0.5rem;
+      background: #0057b8;
+      color: #fff;
+      font-weight: 700;
+    }
+    #introducing-lab-owl .owl-secondary { background: #fff; color: #0057b8; }
+    #introducing-lab-owl .owl-transcript {
+      max-height: 27rem;
+      overflow: auto;
+      border: 1px solid #d8e7f5;
+      border-radius: 0.85rem;
+      padding: clamp(0.7rem, 2vw, 1.2rem);
+      background: #f4f8fd;
+    }
+    #introducing-lab-owl .owl-dialogue { display: grid; gap: 0.7rem; }
+    #introducing-lab-owl .owl-message {
+      width: fit-content;
+      max-width: min(90%, 42rem);
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #c9ddf3;
+      border-radius: 0.25rem 0.85rem 0.85rem;
+      background: #fff;
+      color: #002855;
+      overflow-wrap: anywhere;
+    }
+    #introducing-lab-owl .owl-message b { display: block; margin-bottom: 0.15rem; }
+    #introducing-lab-owl .owl-message.owl-coach-message {
+      justify-self: end;
+      border-color: #002855;
+      border-radius: 0.85rem 0.25rem 0.85rem 0.85rem;
+      background: #002855;
+      color: #fff;
+    }
+    #introducing-lab-owl .owl-chat { padding: 0.85rem; border-radius: 0.55rem; overflow-wrap: anywhere; }
+    #introducing-lab-owl .owl-feedback { border-left: 4px solid #97E152; background: #f1fae9; }
+    #introducing-lab-owl .owl-feedback.owl-retry { border-left-color: #d38714; background: #fff5e5; }
+    #introducing-lab-owl .owl-choice { width: 100%; }
+    #introducing-lab-owl .owl-choice:disabled { cursor: default; }
+    #introducing-lab-owl .owl-choice.owl-correct { border-color: #548b2e; background: #f1fae9; }
+    #introducing-lab-owl .owl-choice.owl-incorrect { border-color: #a76b0e; background: #fff5e5; }
+  </style>
+</head>
+<body>
+  <div id="introducing-lab-owl">
+    <header class="banner">
+      <div class="banner-pattern" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="introducing-lab-owl-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+              <circle cx="40" cy="40" r="1" fill="#FFFFFF"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#introducing-lab-owl-pattern)"/>
+        </svg>
+      </div>
+      <div class="banner-content">
+        <div class="banner-label"><span class="banner-dot" aria-hidden="true"></span>LAB OWL</div>
+        <h1>Introducing Lab Owl</h1>
+        <p>Use the Lab Owl framework to guide student-led debugging conversations.</p>
+      </div>
+      <svg class="banner-wave" viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80V40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0Z" fill="#FFFFFF"/>
+      </svg>
+    </header>
+
+    <main>
+      <section aria-labelledby="owl-overview">
+        <h2 class="section-heading" id="owl-overview">The Lab Owl Framework</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content flow">
+          <p>To support Programming Lab sessions, we use a framework called <strong>Lab Owl</strong>. Lab Owl serves as a structured coaching guide that helps Peer Navigators facilitate debugging conversations without stepping into tutoring or providing content instruction.</p>
+          <p>Programming problems often feel overwhelming to students because they do not know where to start. Lab Owl gives both you <em>and</em> the student a clear direction for the conversation. It helps sessions stay structured, student-driven, focused on skill development, and aligned with our mission. When you follow the Lab Owl process, you help students move from confusion to clarity while building stronger debugging habits.</p>
+          <p>Lab Owl helps students slow down so they can clearly observe what is happening and make intentional decisions about what to test next.</p>
+          <div class="panel lab-owl-panel flow">
+            <h3>Lab Owl Helps Students</h3>
+            <ul class="activity-list">
+              <li>Identify where a problem begins.</li>
+              <li>Observe what their program is doing.</li>
+              <li>Isolate variables to test.</li>
+              <li>Recognize patterns in outputs.</li>
+              <li>Build independent debugging habits.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="owl-explore">
+        <h2 class="section-heading" id="owl-explore">Explore the Lab Owl Stages</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content flow owl-explore">
+          <p>Select each letter to reveal its stage. Open a stage card to see example coaching questions.</p>
+          <div id="owl-letters" class="owl-letters"></div>
+          <p id="owl-progress" class="owl-progress" role="status"></p>
+          <div id="owl-stage-cards" class="owl-stage-cards"></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="owl-practice">
+        <h2 class="section-heading" id="owl-practice">Practice a Lab Owl Conversation</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="owl-practice-layout">
+          <aside class="owl-practice-sidebar flow" aria-labelledby="owl-practice-stages">
+            <h3 id="owl-practice-stages">Lab Owl Stages</h3>
+            <div id="owl-stage-nav" class="owl-stage-nav" role="group" aria-labelledby="owl-practice-stages"></div>
+            <details class="owl-stage-reference">
+              <summary>Stage guide and sample questions</summary>
+              <div id="owl-stage-info" class="flow" aria-live="polite"></div>
+            </details>
+          </aside>
+          <div class="owl-scenario">
+            <div class="owl-scenario-header">
+              <div>
+                <h3>zyBooks – Python Functions</h3>
+                <p id="owl-step-count"></p>
+              </div>
+              <button id="owl-reset" class="owl-action owl-secondary" type="button">Reset scenario</button>
+            </div>
+            <div class="owl-scenario-body flow">
+              <p>Choose how you would respond to the student at each stage.</p>
+              <div id="owl-transcript" class="owl-transcript flow" role="log" aria-label="Scenario conversation" tabindex="0"></div>
+              <div id="owl-responses" class="flow"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="owl-example-overlay" class="owl-example-overlay" hidden>
+      <div class="owl-example-popup flow" role="dialog" aria-modal="true" aria-labelledby="owl-example-title">
+        <div class="owl-example-header">
+          <h3 id="owl-example-title"></h3>
+          <button id="owl-example-close" class="owl-action owl-secondary" type="button">Close</button>
+        </div>
+        <ul id="owl-example-questions"></ul>
+      </div>
+    </div>
+  </div>
+  <script>
+    (() => {
+      'use strict';
+      const { letters, stages, scenario } = {"letters":{"L":{"title":"Locate the Block","description":"Help the student narrow the focus. When they say 'It's not working,' help them identify exactly where the issue is happening.","questions":["Where exactly does it stop working?","Which section feels most confusing right now?","If you had to point to one area causing stress, what would it be?"],"color":"#002855"},"A":{"title":"Analyze What's Happening","description":"Encourage the student to describe what the program is doing while you observe. Listen carefully to understand their expectations.","questions":["Tell me what you were expecting from this code.","What is it actually doing right now?","What does the error message say?","What changed between when it worked and now?"],"color":"#0070F0"},"B":{"title":"Break It Down","description":"Help them isolate smaller pieces. Programming problems feel overwhelming when students try to change everything at once.","questions":["What is the smallest piece we could test here?","What happens if we comment out everything except this section?","Which variable feels safest to test first?"],"color":"#97E152"},"O":{"title":"Observe the Pattern","description":"After testing, pause and reflect together. Encourage the student to notice patterns in the output and what stays consistent.","questions":["Is this happening every time or only sometimes?","What pattern do you notice?","What stayed the same?","What changed?"],"color":"#46B1EF"},"W":{"title":"Work the Hypothesis","description":"Help the student make a prediction before running the program again. This turns trial and error into intentional experimentation.","questions":["What do you think might be causing this?","If we change this part, what do you expect to happen?","How will we know if that theory is correct?"],"color":"#002855"},"L2":{"title":"Lock in the Learning","description":"Before ending the session, zoom out and reflect. Even if the code isn't fully solved, the session succeeds if they leave with a clearer process.","questions":["What strategy worked well today?","What will you try first the next time something breaks?","What did you learn about your debugging process?"],"color":"#0070F0"}},"stages":{"locate":{"title":"Locate the Block","description":"Start by helping the student narrow the focus. When a student says \"It's not working,\" help them identify exactly where the issue is happening.","questions":["Where exactly does it stop working?","Which section feels most confusing right now?","If you had to point to one area causing stress, what would it be?"]},"analyze":{"title":"Analyze What's Happening","description":"Encourage the student to describe what the program is doing while you observe.","questions":["Tell me what you were expecting from this code.","What is it actually doing right now?","What does the error message say?","What changed between when it worked and now?"]},"break":{"title":"Break It Down","description":"Programming problems often feel overwhelming because students try to change everything at once. Help them isolate smaller pieces.","questions":["What is the smallest piece we could test here?","What happens if we comment out everything except this section?","Which variable feels safest to test first?"]},"observe":{"title":"Observe the Pattern","description":"After testing something, pause and reflect. Encourage the student to notice patterns in the output.","questions":["Is this happening every time or only sometimes?","What pattern do you notice?","What stayed the same?","What changed?"]},"work":{"title":"Work the Hypothesis","description":"Help the student make a prediction before running the program again. This turns trial and error into intentional experimentation.","questions":["What do you think might be causing this?","If we change this part, what do you expect to happen?","How will we know if that theory is correct?"]},"lock":{"title":"Lock in the Learning","description":"Before ending the session, zoom out and reflect. Even if the code is not fully solved, the session can still be successful.","questions":["What strategy worked well today?","What will you try first the next time something breaks?","What did you learn about your debugging process?"]}},"scenario":[{"stage":"locate","dialogue":"Student: I'm stuck on my zyBooks assignment. My calculate_average function isn't working and I don't know where to start.\n\nCoach: Let me help you figure this out. Can you tell me where exactly does it stop working? Which part feels most confusing?\n\nStudent: I think it's something in the function logic, but I'm not sure.","coachFollowUp":"You respond:","choices":[{"text":"That's exactly right—you've found the real block. Let's dig into that part.","correct":true,"feedback":"Perfect! You're narrowing the focus and confirming their thinking."},{"text":"Show me your full code and I'll figure out what's wrong.","correct":false,"feedback":"Taking over the investigation shifts from coaching to tutoring."},{"text":"Did you try debugging it with print statements yet?","correct":false,"feedback":"That's a method suggestion, not coaching on what you just heard."}]},{"stage":"analyze","dialogue":"Student: It's the calculate_average function. When I run it, I get 'TypeError: unsupported operand type(s) for /: NoneType and int'. I expected it to return something like 85.5, but instead I'm getting None.\n\nCoach: So the error is about dividing by a NoneType. Before we fix anything, walk me through: what did you expect to happen versus what's actually happening?\n\nStudent: I expected the average to be 85.5 but I got None instead.","coachFollowUp":"You respond:","choices":[{"text":"You're describing the real problem now. The calculation itself seems fine, but something's not going right. Keep going.","correct":true,"feedback":"Great! You're helping them fully articulate the gap without solving it."},{"text":"Ah, you forgot to initialize a variable. That's why it's NoneType.","correct":false,"feedback":"You're jumping to a solution. Let them explore the behavior first."},{"text":"Let me see the exact line where the error happens.","correct":false,"feedback":"You're asking for code details before understanding their mental model."}]},{"stage":"break","dialogue":"Student: The error says NoneType, which means the function is returning None instead of a number. But I have the formula right there: total / len(numbers). The math should work.\n\nCoach: Good observation. Let's isolate the smallest piece we can test. What if we add a print statement right after you calculate total, just to see if that variable is working?\n\nStudent: Okay, I added it. The total calculated fine!","coachFollowUp":"You respond:","choices":[{"text":"Perfect—that's breaking it into a testable piece. Do that and tell me what you see.","correct":true,"feedback":"Excellent! You're guiding them toward systematic debugging, one small step."},{"text":"Actually, the real issue is you need to add a return statement.","correct":false,"feedback":"You just jumped to the solution when they were about to test something."},{"text":"Rewrite the whole function more carefully this time.","correct":false,"feedback":"That's too drastic. They're on the verge of discovering the real issue."}]},{"stage":"observe","dialogue":"Student: I added print statements and... oh! The function IS calculating the average correctly. But then at the end, it's returning None, not the actual number. That's weird. The math is right, but it's like the answer isn't going anywhere.\n\nCoach: You just noticed something really important. The calculation happens, but the result isn't making it out of the function. What does that tell you?\n\nStudent: Hmm... the calculation works but the result isn't getting passed back?","coachFollowUp":"You respond:","choices":[{"text":"Think about what you've learned: the calculation works fine, but nothing's actually *giving* that value back. What does Python need to do that?","correct":true,"feedback":"Perfect! You're guiding them to the insight without just telling them the answer."},{"text":"You're missing a return statement. Add 'return' before the calculation.","correct":false,"feedback":"You told them the answer right when they were about to find it themselves."},{"text":"Maybe the issue is with your variable names?","correct":false,"feedback":"That's a guess. They've already shown you the real issue."}]},{"stage":"work","dialogue":"Student: Wait... Python needs me to actually *return* the value, right? Like, I have to tell it to send the answer back out?\n\nCoach: Yes! That's your hypothesis. Before you make that change, what do you think will happen?\n\nStudent: If I add 'return' before the calculation, it should actually give me back the number instead of None?","coachFollowUp":"You respond:","choices":[{"text":"Exactly. So go ahead and try it. What happens?","correct":true,"feedback":"Excellent! You're having them predict AND test—that's real learning."},{"text":"Yes, just add 'return' and it'll work. Trust me.","correct":false,"feedback":"Confirming the answer removes the power of them testing their own prediction."},{"text":"Good thinking. Now rewrite the whole function.","correct":false,"feedback":"You're overcomplicating it. They just need to test one small change."}]},{"stage":"lock","dialogue":"Student: I added 'return' before the calculation and... it works! The function returned 85.5. I can't believe I spent so long on that. Now I totally see it—the calculation isn't worth anything if I don't actually *return* it.\n\nCoach: You figured that out by testing methodically. Before we wrap up, I want you to think about something...\n\nStudent: Okay, I'm listening.","coachFollowUp":"You respond:","choices":[{"text":"What did you do today that actually helped you find the bug? That's the strategy to use next time something breaks.","correct":true,"feedback":"Perfect! You're building their independent debugging process, not just fixing this problem."},{"text":"Make sure you always remember to add return statements in your functions.","correct":false,"feedback":"That's advice-giving. They just learned it themselves—let that be the lesson."},{"text":"Great job! Do you have other assignments to work on?","correct":false,"feedback":"Ending without reflection misses the chance to cement what they learned."}]}]};
+      const byId = id => document.getElementById(id);
+      const create = (tag, text = '', className = '') => {
+        const element = document.createElement(tag);
+        element.textContent = text;
+        if (className) element.className = className;
+        if (tag === 'button') element.type = 'button';
+        return element;
+      };
+      const questionList = questions => questions.map(question => create('li', question));
+      const stageCards = byId('owl-stage-cards');
+      const progress = byId('owl-progress');
+      let revealed = 0;
+      const exampleOverlay = byId('owl-example-overlay');
+      const exampleClose = byId('owl-example-close');
+      let exampleTrigger;
+
+      function closeExamples() {
+        exampleOverlay.hidden = true;
+        exampleTrigger.focus();
+      }
+
+      exampleClose.addEventListener('click', closeExamples);
+      exampleOverlay.addEventListener('click', event => {
+        if (event.target === exampleOverlay) closeExamples();
+      });
+      exampleOverlay.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeExamples();
+        } else if (event.key === 'Tab') {
+          event.preventDefault();
+          exampleClose.focus();
+        }
+      });
+
+      const letterGroups = [create('div', '', 'owl-letter-group'), create('div', '', 'owl-letter-group')];
+      byId('owl-letters').append(...letterGroups);
+      Object.entries(letters).forEach(([key, stage], index) => {
+        const letter = create('button', key[0], 'owl-letter');
+        const card = create('div', '', 'owl-stage-card');
+        card.id = 'owl-card-' + key;
+        card.hidden = true;
+        letter.setAttribute('aria-label', key[0] + ' – ' + stage.title);
+        letter.setAttribute('aria-controls', card.id);
+        letter.setAttribute('aria-expanded', 'false');
+        for (const element of [letter, card]) element.style.setProperty('--stage-color', stage.color);
+        if (stage.color === '#0070F0') letter.style.setProperty('--stage-color', '#0057B8');
+        if (stage.color === '#97E152' || stage.color === '#46B1EF') letter.classList.add('owl-dark-text');
+        const questionToggle = create('button', 'View example questions', 'owl-card-link');
+        questionToggle.setAttribute('aria-label', 'View example questions for ' + stage.title);
+        questionToggle.setAttribute('aria-haspopup', 'dialog');
+        questionToggle.addEventListener('click', () => {
+          exampleTrigger = questionToggle;
+          byId('owl-example-title').textContent = stage.title;
+          byId('owl-example-questions').replaceChildren(...questionList(stage.questions));
+          exampleOverlay.hidden = false;
+          exampleClose.focus();
+        });
+        card.append(
+          create('span', stage.title, 'owl-card-title'),
+          create('span', stage.description),
+          questionToggle
+        );
+        letter.addEventListener('click', () => {
+          if (card.hidden) {
+            card.hidden = false;
+            letter.setAttribute('aria-expanded', 'true');
+            revealed += 1;
+            progress.textContent = revealed === 6 ? 'All six stages revealed.' : revealed + ' of 6 stages revealed';
+          } else {
+            questionToggle.focus();
+          }
+        });
+        letterGroups[Math.floor(index / 3)].append(letter);
+        stageCards.append(card);
+      });
+      progress.textContent = '0 of 6 stages revealed';
+
+      const transcript = byId('owl-transcript');
+      const responseArea = byId('owl-responses');
+      const stageNav = byId('owl-stage-nav');
+      const stageInfo = byId('owl-stage-info');
+      let stepIndex = 0;
+
+      function showStage(key) {
+        const stage = stages[key];
+        for (const button of stageNav.children) {
+          button.setAttribute('aria-pressed', String(button.dataset.stage === key));
+        }
+        const list = create('ul', '', 'activity-list');
+        list.append(...questionList(stage.questions.slice(0, 2)));
+        stageInfo.replaceChildren(create('h3', stage.title), create('p', stage.description), list);
+      }
+
+      for (const [key, stage] of Object.entries(stages)) {
+        const button = create('button', stage.title);
+        button.dataset.stage = key;
+        button.addEventListener('click', () => {
+          showStage(key);
+          stageInfo.parentElement.open = true;
+        });
+        stageNav.append(button);
+      }
+
+      function addToTranscript(block) {
+        transcript.append(block);
+        transcript.scrollTop = transcript.scrollHeight;
+      }
+
+      function displayStep() {
+        const step = scenario[stepIndex];
+        showStage(step.stage);
+        byId('owl-step-count').textContent = 'Stage ' + (stepIndex + 1) + ' of ' + scenario.length + ' · ' + stages[step.stage].title;
+        const dialogue = create('div', '', 'owl-dialogue');
+        for (const line of step.dialogue.split('\n\n')) {
+          const boundary = line.indexOf(':');
+          const speaker = line.slice(0, boundary);
+          const message = create('p', '', speaker === 'Coach' ? 'owl-message owl-coach-message' : 'owl-message');
+          message.append(
+            create('b', (speaker === 'Coach' ? 'Peer Navigator' : speaker) + ':'),
+            document.createTextNode(line.slice(boundary + 1))
+          );
+          dialogue.append(message);
+        }
+        addToTranscript(dialogue);
+
+        const prompt = create('h3', step.coachFollowUp.replace(/:$/, ''), 'owl-response-heading');
+        prompt.tabIndex = -1;
+        const choices = step.choices.map(choice => create('button', choice.text, 'owl-choice'));
+        responseArea.replaceChildren(prompt, ...choices);
+        choices.forEach((button, index) => {
+          button.addEventListener('click', () => {
+            const selected = step.choices[index];
+            for (const [choiceIndex, option] of choices.entries()) {
+              option.disabled = true;
+              if (step.choices[choiceIndex].correct) option.classList.add('owl-correct');
+            }
+            if (!selected.correct) button.classList.add('owl-incorrect');
+            const feedback = create('div', '', 'owl-chat owl-feedback flow');
+            feedback.append(create('p', selected.correct ? 'Great coaching!' : 'Consider this'), create('p', selected.feedback));
+            if (!selected.correct) {
+              feedback.classList.add('owl-retry');
+              const example = step.choices.find(choice => choice.correct);
+              feedback.append(create('p', 'Stronger response: ' + example.text));
+            }
+            addToTranscript(feedback);
+            const lastStep = stepIndex === scenario.length - 1;
+            const next = create('button', lastStep ? 'Finish scenario' : 'Continue', 'owl-action');
+            next.addEventListener('click', () => {
+              stepIndex += 1;
+              if (lastStep) {
+                byId('owl-step-count').textContent = 'All six stages complete';
+                const title = create('h3', 'Scenario Complete!');
+                title.tabIndex = -1;
+                const retry = create('button', 'Try again', 'owl-action');
+                retry.addEventListener('click', resetScenario);
+                responseArea.replaceChildren(title, create('p', 'You’ve practiced all six Lab Owl stages.'), retry);
+                title.focus();
+              } else {
+                displayStep().focus();
+              }
+            });
+            responseArea.append(next);
+            next.focus();
+          });
+        });
+        return prompt;
+      }
+
+      function resetScenario(event) {
+        stepIndex = 0;
+        transcript.replaceChildren();
+        const prompt = displayStep();
+        if (event) prompt.focus();
+      }
+
+      byId('owl-reset').addEventListener('click', resetScenario);
+      resetScenario();
+    })();
+  </script>
+</body>
+</html>
