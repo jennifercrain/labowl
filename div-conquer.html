@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divide and Conquer Debugging</title>
+  <style>
+    body { margin: 0; }
+    #lab-owl-divide-and-conquer, #lab-owl-divide-and-conquer * {
+      box-sizing: border-box;
+      font-family: Arial, "Liberation Sans", sans-serif !important;
+    }
+    #lab-owl-divide-and-conquer {
+      color: #000000;
+      background: #FFFFFF;
+      font-size: 16px !important;
+      line-height: 1.55;
+    }
+    #lab-owl-divide-and-conquer h1, #lab-owl-divide-and-conquer h2, #lab-owl-divide-and-conquer h3,
+    #lab-owl-divide-and-conquer p, #lab-owl-divide-and-conquer ul { margin: 0; }
+    #lab-owl-divide-and-conquer :is(p, li, .banner-label) { font-size: 16px !important; }
+    #lab-owl-divide-and-conquer h1 { font-size: 36px !important; line-height: 1.1; }
+    #lab-owl-divide-and-conquer h2 { font-size: 24px !important; line-height: 1.2; color: #002855; }
+    #lab-owl-divide-and-conquer h3 { font-size: 20px !important; line-height: 1.25; color: #002855; }
+    #lab-owl-divide-and-conquer strong { color: #0070F0; }
+    #lab-owl-divide-and-conquer .banner {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #002855, #0070F0);
+      color: #FFFFFF;
+      text-align: center;
+    }
+    #lab-owl-divide-and-conquer .banner-pattern { position: absolute; inset: 0; opacity: 0.05; pointer-events: none; }
+    #lab-owl-divide-and-conquer .banner-content { position: relative; padding: 5rem 1.5rem; }
+    #lab-owl-divide-and-conquer .banner-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 999px;
+      background: rgba(151, 225, 82, 0.2);
+      color: #97E152;
+      font-weight: 500;
+    }
+    #lab-owl-divide-and-conquer .banner-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #97E152; }
+    #lab-owl-divide-and-conquer .banner p { max-width: 48rem; margin: 1.5rem auto 0; color: rgba(255, 255, 255, 0.95); }
+    #lab-owl-divide-and-conquer .banner-wave { display: block; width: 100%; margin-bottom: -1px; }
+    #lab-owl-divide-and-conquer main { max-width: 72rem; padding: 0 1.5rem 2rem; margin: 0 auto; }
+    #lab-owl-divide-and-conquer main > section { padding-block: 0.75rem; }
+    #lab-owl-divide-and-conquer main > section + section { padding-top: 2.75rem; }
+    #lab-owl-divide-and-conquer .section-heading { text-align: center; }
+    #lab-owl-divide-and-conquer .section-divider {
+      width: 5rem;
+      height: 3px;
+      margin: 0.75rem auto 1.25rem;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #002855 0%, #0070F0 50%, #97E152 100%);
+    }
+    #lab-owl-divide-and-conquer .content { max-width: 48rem; margin-inline: auto; }
+    #lab-owl-divide-and-conquer .flow > * + * { margin-top: 0.9rem; }
+    #lab-owl-divide-and-conquer .flow > * + .panel,
+    #lab-owl-divide-and-conquer .flow > .panel + * { margin-top: 1.25rem; }
+    #lab-owl-divide-and-conquer .panel {
+      padding: 1.5rem;
+      border-left: 4px solid #0070F0;
+      border-radius: 1rem;
+      background: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 40, 85, 0.1);
+    }
+    #lab-owl-divide-and-conquer .lab-owl-panel { border-left-color: #97E152; }
+    #lab-owl-divide-and-conquer .activity-list { padding-left: 1.4rem; }
+    #lab-owl-divide-and-conquer .activity-list li + li { margin-top: 0.6rem; }
+    #lab-owl-divide-and-conquer .activity-list li::marker { color: #002855; }
+    @media (min-width: 768px) {
+      #lab-owl-divide-and-conquer h1 { font-size: 48px !important; }
+      #lab-owl-divide-and-conquer h2 { font-size: 30px !important; }
+    }
+    @media (min-width: 1024px) {
+      #lab-owl-divide-and-conquer h1 { font-size: 60px !important; }
+    }
+    #lab-owl-divide-and-conquer button { font: inherit; cursor: pointer; }
+    #lab-owl-divide-and-conquer :is(button, [tabindex]):focus-visible { outline: 3px solid #0070F0; outline-offset: 3px; }
+    #lab-owl-divide-and-conquer .practice-module {
+      max-width: 60rem;
+      margin-inline: auto;
+      overflow: hidden;
+      border: 1px solid #bed3eb;
+      border-left: 5px solid #97E152;
+      border-radius: 1rem;
+      box-shadow: 0 6px 20px rgba(0, 40, 85, 0.10);
+    }
+    #lab-owl-divide-and-conquer .practice-launch {
+      padding: clamp(1.1rem, 4vw, 2rem);
+      background: linear-gradient(115deg, #002855, #123e6d);
+      color: #fff;
+    }
+    #lab-owl-divide-and-conquer .practice-launch h2 { color: #fff; }
+    #lab-owl-divide-and-conquer .strategy-options { display: grid; gap: 0.85rem; margin-top: 1.25rem; }
+
+    #lab-owl-divide-and-conquer .strategy-choice {
+      position: relative;
+      display: grid;
+      align-content: start;
+      gap: 0.4rem;
+      min-width: 0;
+      padding: 1rem 2.65rem 1rem 1rem;
+      border: 2px solid transparent;
+      border-radius: 0.75rem;
+      background: #fff;
+      color: #002855;
+      text-align: left;
+    }
+    #lab-owl-divide-and-conquer .strategy-choice b { font-size: 1.125rem; line-height: 1.3; }
+    #lab-owl-divide-and-conquer .strategy-choice::after {
+      content: "";
+      position: absolute;
+      top: 1.35rem;
+      right: 1.15rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-top: 2px solid #0057b8;
+      border-right: 2px solid #0057b8;
+      transform: rotate(45deg);
+    }
+    #lab-owl-divide-and-conquer .strategy-choice:hover,
+    #lab-owl-divide-and-conquer .strategy-choice[aria-pressed="true"] {
+      border-color: #97E152;
+      background: #edf5ff;
+    }
+    #lab-owl-divide-and-conquer .strategy-choice:focus-visible { outline-color: #97E152; }
+    #lab-owl-divide-and-conquer .practice-panel {
+      border-top: 1px solid #46739e;
+      background: #fff;
+    }
+    #lab-owl-divide-and-conquer .practice-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 4px solid #97E152;
+      background: #002855;
+      color: #fff;
+    }
+    #lab-owl-divide-and-conquer .practice-header h3 { color: #fff; }
+    #lab-owl-divide-and-conquer .practice-layout { display: grid; gap: 1rem; padding: clamp(0.8rem, 3vw, 1.5rem); }
+    @media (min-width: 880px) {
+      #lab-owl-divide-and-conquer .practice-layout { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+    }
+    #lab-owl-divide-and-conquer :is(.practice-code, .practice-chat) { min-width: 0; }
+    #lab-owl-divide-and-conquer .practice-code h3 { font-size: 16px !important; overflow-wrap: anywhere; }
+    #lab-owl-divide-and-conquer .practice-code pre {
+      margin: 0.65rem 0 0;
+      overflow: auto;
+      padding: 0.85rem;
+      border-radius: 0.65rem;
+      background: #002855;
+      color: #fff;
+      tab-size: 4;
+    }
+    #lab-owl-divide-and-conquer .practice-code code { font: 14px/1.6 monospace !important; }
+    #lab-owl-divide-and-conquer .practice-transcript {
+      max-height: 24rem;
+      overflow: auto;
+      padding: 0.75rem;
+      border: 1px solid #d8e7f5;
+      border-radius: 0.75rem;
+      background: #f4f8fd;
+    }
+    #lab-owl-divide-and-conquer .practice-message {
+      max-width: 92%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.25rem 0.8rem 0.8rem;
+      background: #fff;
+      color: #002855;
+      overflow-wrap: anywhere;
+    }
+    #lab-owl-divide-and-conquer .practice-message b { display: block; margin-bottom: 0.2rem; }
+    #lab-owl-divide-and-conquer .practice-message.practice-reply {
+      margin-left: auto;
+      background: #002855;
+      color: #fff;
+      border-radius: 0.8rem 0.25rem 0.8rem 0.8rem;
+    }
+    #lab-owl-divide-and-conquer .practice-feedback { padding: 0.65rem 0.8rem; border-left: 4px solid #97E152; background: #f1fae9; }
+    #lab-owl-divide-and-conquer .practice-feedback.is-retry { border-left-color: #a76b0e; background: #fff5e5; }
+    #lab-owl-divide-and-conquer .practice-choice {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #bed3eb;
+      border-radius: 0.55rem;
+      background: #fff;
+      color: #002855;
+      text-align: left;
+    }
+    #lab-owl-divide-and-conquer .practice-choice:hover:not(:disabled) { background: #edf5ff; }
+    #lab-owl-divide-and-conquer .practice-choice.is-retry { border-color: #a76b0e; }
+    #lab-owl-divide-and-conquer .practice-action {
+      padding: 0.5rem 0.85rem;
+      border: 1px solid #0057b8;
+      border-radius: 0.5rem;
+      background: #0057b8;
+      color: #fff;
+      font-weight: 700;
+    }
+    #lab-owl-divide-and-conquer .practice-secondary { background: #fff; color: #0057b8; }
+  </style>
+</head>
+<body>
+  <div id="lab-owl-divide-and-conquer">
+    <header class="banner">
+      <div class="banner-pattern" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="lab-owl-divide-and-conquer-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+              <circle cx="40" cy="40" r="1" fill="#FFFFFF"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#lab-owl-divide-and-conquer-pattern)"/>
+        </svg>
+      </div>
+      <div class="banner-content">
+        <div class="banner-label"><span class="banner-dot" aria-hidden="true"></span>LAB OWL</div>
+        <h1>Divide and Conquer Debugging</h1>
+        <p>Help students break a debugging problem into smaller pieces they can test one at a time.</p>
+      </div>
+      <svg class="banner-wave" viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80V40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0Z" fill="#FFFFFF"/>
+      </svg>
+    </header>
+
+    <main>
+      <section aria-labelledby="divide-and-conquer">
+        <h2 class="section-heading" id="divide-and-conquer">Isolate One Piece at a Time</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content flow">
+          <p>Programming problems can feel overwhelming when students try to fix everything at once. Divide and Conquer debugging helps students isolate smaller pieces of the code so they can test them individually.</p>
+          <div class="panel lab-owl-panel flow">
+            <h3>You Might Ask</h3>
+            <ul class="activity-list">
+              <li>“What’s the smallest section we could test right now?”</li>
+              <li>“What happens if we temporarily comment out everything except this part?”</li>
+              <li>“What part of the program controls the output we’re seeing?”</li>
+            </ul>
+          </div>
+          <p>By narrowing the scope of the investigation, students can focus on one variable or section at a time. This strategy works well during the <strong>Break It Down</strong> stage of Lab Owl.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="practice-strategies">
+        <div class="practice-module">
+          <div class="practice-launch flow">
+            <h2 id="practice-strategies">Practice Divide and Conquer Debugging</h2>
+            <p>Respond as the Peer Navigator and help the student test smaller parts of the code across six steps.</p>
+            <div id="strategy-options" class="strategy-options"></div>
+            <noscript><p>Enable JavaScript to use the practice simulator.</p></noscript>
+          </div>
+          <div class="practice-panel" id="strategy-simulation" hidden>
+            <header class="practice-header">
+              <div><h3 id="strategy-title"></h3><p id="practice-progress"></p></div>
+              <button id="practice-back" type="button" class="practice-action practice-secondary">Close practice</button>
+            </header>
+            <div class="practice-layout">
+              <div class="practice-code">
+                <h3 id="practice-filename"></h3>
+                <pre tabindex="0" aria-labelledby="practice-filename"><code id="practice-code"></code></pre>
+              </div>
+              <div class="flow practice-chat">
+                <div id="practice-transcript" class="flow practice-transcript" role="log" aria-label="Conversation" tabindex="0"></div>
+                <div class="flow" id="practice-responses"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const scenarios = {"divide":{"icon":"🔀","title":"Divide and Conquer Debugging","hint":"Help a student isolate a bug in a Python grade calculator.","filename":"grade_calculator.py","code":"def calculate_grade(assignment, midterm, final):\n    # Calculate weighted average\n    avg = (assignment * 0.3 + midterm * 0.3 + final * 0.4)\n\n    # Determine letter grade\n    if avg >= 90:\n        return \"A\"\n    elif avg >= 80:\n        return \"B\"\n    elif avg >= 700:\n        return \"C\"\n    else:\n        return \"F\"\n\n# Test\nscore1 = calculate_grade(95, 88, 92)\nscore2 = calculate_grade(65, 70, 75)\nprint(f\"Score 1: {score1}, Score 2: {score2}\")","conversation":[{"speaker":"student","message":"Help! My grade calculator is broken. When I test with scores 65, 70, and 75, it shows an F, but that should definitely be a C. The first test with 95, 88, 92 works fine and shows an A. There's so much code here—calculation, conditions, I don't even know where to start!","options":[{"text":"Let me look at the whole function... I see several issues.","correct":false,"feedback":"You're overwhelmed too! With Divide and Conquer, help them test individual sections first instead of trying to understand everything at once."},{"text":"That's overwhelming! Let's use Divide and Conquer. What's the smallest section we could test first to narrow things down?","correct":true,"feedback":"Perfect! You're helping them break down the problem into manageable pieces. That's the core of Divide and Conquer debugging."},{"text":"Try adding print statements throughout the code.","correct":false,"feedback":"While debugging tools help, Divide and Conquer means first identifying which section to isolate and test. What single piece controls the problematic output?"}]},{"speaker":"student","message":"The output is a letter grade, so that comes from the if-elif conditions. Should I focus on that part first?","options":[{"text":"Let's change each condition until one works.","correct":false,"feedback":"Before changing code, help them test individual sections. What does just the raw average calculation produce for that failing test case?"},{"text":"Yes, that's where the problem is.","correct":false,"feedback":"You might be right, but go smaller first! The if-elif logic depends on the average value. Test just the calculation in isolation to see what it produces."},{"text":"Good thinking, but let's isolate even smaller first. Can you just test what the average calculation produces—without the if statements?","correct":true,"feedback":"Excellent! You're dividing it further—separating the calculation from the grading logic. This is smart Divide and Conquer strategy."}]},{"speaker":"student","message":"If I just calculate the average for 65, 70, and 75: 65 × 0.3 = 19.5, 70 × 0.3 = 21, 75 × 0.4 = 30. So 19.5 + 21 + 30 = 70.5. The calculation looks right!","options":[{"text":"Great! So the calculation is working correctly. Now let's test the grading logic separately. With 70.5, which condition should trigger and return C?","correct":true,"feedback":"Perfect! You've isolated and verified the calculation. Now help them test the next section—the if-elif conditions—independently."},{"text":"The calculation is correct, so change the weights.","correct":false,"feedback":"No need to change anything yet! Help them test the next section. With 70.5, trace which condition should execute and return a C."},{"text":"Then the problem must be in the conditions.","correct":false,"feedback":"Good instinct, but let them work through it. They should trace through the conditions with 70.5 to see what actually triggers. This is still isolating parts."}]},{"speaker":"student","message":"If the cutoff is 70, then with 70.5: Is it >= 90? No. Is it >= 80? No. Is it >= 70? Yes! So it should return C.","options":[{"text":"So the conditions are fine.","correct":false,"feedback":"Looks like it! So now help them test what happens when the calculation and conditions work together. Call the actual function and trace what should happen."},{"text":"Something must be wrong with your >= 70 condition.","correct":false,"feedback":"Wait, they just traced through and >= 70 should catch 70.5 correctly. Let them run the actual function to see what really happens!"},{"text":"The calculation gives 70.5 and the intended grading rule gives a C. What happens when you run the whole function with those same scores?","correct":true,"feedback":"You isolated the calculation and traced the intended rule. Now compare that prediction with what the full function actually returns."}]},{"speaker":"student","message":"I ran it and the function returned F, not C! The calculation gave 70.5 on its own, and I expected a C. Let me print the average inside the function to see what value it actually compares.","options":[{"text":"The problem is definitely in the conditions.","correct":false,"feedback":"They already traced the logic correctly. Use a debug print to see what value is actually being compared inside the function!"},{"text":"Great idea! Add a debug print that shows the average value right before the if-elif conditions. What does it print?","correct":true,"feedback":"Perfect! This is classic Divide and Conquer—you're helping them isolate exactly where the disconnect is. The debug line will reveal the truth!"},{"text":"Let me look at the conditions again instead.","correct":false,"feedback":"A debug print is the smart move here. They've verified each piece works separately; now they need to see what the function actually calculates at runtime."}]},{"speaker":"student","message":"I added the print statement and it shows the average is 70.5, which is correct. So I checked the conditions again and found it: I typed >= 700 instead of >= 70!","options":[{"text":"Fantastic! By dividing the problem into testable pieces—calculation, logic, and debug output—you found the typo! That's exactly why Divide and Conquer is so powerful.","correct":true,"feedback":"Excellent! You guided them systematically: isolate the calculation, test the conditions separately, add debug output to find the disconnect. This methodical approach beats random searching every time!"},{"text":"Great catch! Fix that typo.","correct":false,"feedback":"Yes! But use this moment to reinforce why this approach worked. By breaking the problem into sections and testing each one independently, they found the real bug methodically."},{"text":"Change it and move on.","correct":false,"feedback":"They found it! Take a moment to help them see how Divide and Conquer—testing each section independently—led them to this discovery."}]}]}};
+      const byId = id => document.getElementById(id);
+      const create = (tag, text, className) => {
+        const element = document.createElement(tag);
+        if (text) element.textContent = text;
+        if (className) element.className = className;
+        if (tag === 'button') element.type = 'button';
+        return element;
+      };
+      const selector = byId('strategy-options');
+      const panel = byId('strategy-simulation');
+      const transcript = byId('practice-transcript');
+      const responses = byId('practice-responses');
+      const progress = byId('practice-progress');
+      let active;
+      let currentStep;
+
+      function appendMessage(label, text, className = '') {
+        const block = create('div', '', 'practice-message ' + className);
+        block.append(create('b', label), create('p', text));
+        transcript.append(block);
+        transcript.scrollTop = transcript.scrollHeight;
+      }
+
+      function returnToStrategies() {
+        panel.hidden = true;
+        transcript.replaceChildren();
+        responses.replaceChildren();
+        active.setAttribute('aria-pressed', 'false');
+        active.focus();
+        active = null;
+      }
+
+      function showStep(sim, focus) {
+        const step = sim.conversation[currentStep];
+        progress.textContent = 'Step ' + (currentStep + 1) + ' of ' + sim.conversation.length;
+        appendMessage('Student', step.message);
+        const heading = create('h3', 'How would you respond?');
+        heading.tabIndex = -1;
+        const controls = step.options.map(option => create('button', option.text, 'practice-choice'));
+        const feedback = create('div');
+        feedback.setAttribute('role', 'status');
+        feedback.hidden = true;
+        responses.replaceChildren(heading, ...controls, feedback);
+
+        controls.forEach((control, index) => {
+          control.addEventListener('click', () => {
+            const option = step.options[index];
+            appendMessage('You (Peer Navigator)', option.text, 'practice-reply');
+            feedback.className = 'practice-feedback' + (option.correct ? '' : ' is-retry');
+            feedback.hidden = false;
+            feedback.textContent = option.feedback;
+            if (!option.correct) {
+              control.classList.add('is-retry');
+              control.disabled = true;
+              controls.find(button => !button.disabled)?.focus();
+              return;
+            }
+            controls.forEach(button => { button.disabled = true; });
+            const last = currentStep === sim.conversation.length - 1;
+            const next = create('button', last ? 'Finish scenario' : 'Continue', 'practice-action');
+            next.addEventListener('click', () => {
+              if (!last) {
+                currentStep += 1;
+                showStep(sim, true);
+                return;
+              }
+              progress.textContent = 'Scenario complete';
+              const title = create('h3', 'Scenario complete');
+              title.tabIndex = -1;
+              const again = create('button', 'Practice again', 'practice-action');
+              again.addEventListener('click', () => active.click());
+              responses.replaceChildren(title, again);
+              title.focus();
+            });
+            responses.append(next);
+            next.focus();
+          });
+        });
+        if (focus) heading.focus();
+      }
+
+      for (const sim of Object.values(scenarios)) {
+        const button = create('button', '', 'strategy-choice');
+        button.setAttribute('aria-controls', 'strategy-simulation');
+        button.setAttribute('aria-pressed', 'false');
+        button.append(create('b', 'Start the simulation'), create('span', sim.hint));
+        button.addEventListener('click', () => {
+          if (active) active.setAttribute('aria-pressed', 'false');
+          active = button;
+          active.setAttribute('aria-pressed', 'true');
+          currentStep = 0;
+          byId('strategy-title').textContent = 'Python Grade Calculator';
+          byId('practice-filename').textContent = sim.filename;
+          byId('practice-code').textContent = sim.code;
+          transcript.replaceChildren();
+          panel.hidden = false;
+          showStep(sim, true);
+        });
+        selector.append(button);
+      }
+      byId('practice-back').addEventListener('click', returnToStrategies);
+    })();
+  </script>
+</body>
+</html>
