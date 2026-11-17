@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Tracing &amp; Execution Simulation</title>
+  <style>
+    body { margin: 0; }
+    #lab-owl-code-tracing, #lab-owl-code-tracing * {
+      box-sizing: border-box;
+      font-family: Arial, "Liberation Sans", sans-serif !important;
+    }
+    #lab-owl-code-tracing {
+      color: #000000;
+      background: #FFFFFF;
+      font-size: 16px !important;
+      line-height: 1.55;
+    }
+    #lab-owl-code-tracing h1, #lab-owl-code-tracing h2, #lab-owl-code-tracing h3,
+    #lab-owl-code-tracing p, #lab-owl-code-tracing ul { margin: 0; }
+    #lab-owl-code-tracing :is(p, li, .banner-label) { font-size: 16px !important; }
+    #lab-owl-code-tracing h1 { font-size: 36px !important; line-height: 1.1; }
+    #lab-owl-code-tracing h2 { font-size: 24px !important; line-height: 1.2; color: #002855; }
+    #lab-owl-code-tracing h3 { font-size: 20px !important; line-height: 1.25; color: #002855; }
+    #lab-owl-code-tracing strong { color: #0070F0; }
+    #lab-owl-code-tracing .banner {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #002855, #0070F0);
+      color: #FFFFFF;
+      text-align: center;
+    }
+    #lab-owl-code-tracing .banner-pattern { position: absolute; inset: 0; opacity: 0.05; pointer-events: none; }
+    #lab-owl-code-tracing .banner-content { position: relative; padding: 5rem 1.5rem; }
+    #lab-owl-code-tracing .banner-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 999px;
+      background: rgba(151, 225, 82, 0.2);
+      color: #97E152;
+      font-weight: 500;
+    }
+    #lab-owl-code-tracing .banner-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #97E152; }
+    #lab-owl-code-tracing .banner p { max-width: 48rem; margin: 1.5rem auto 0; color: rgba(255, 255, 255, 0.95); }
+    #lab-owl-code-tracing .banner-wave { display: block; width: 100%; margin-bottom: -1px; }
+    #lab-owl-code-tracing main { max-width: 72rem; padding: 0 1.5rem 2rem; margin: 0 auto; }
+    #lab-owl-code-tracing main > section { padding-block: 0.75rem; }
+    #lab-owl-code-tracing main > section + section { padding-top: 2.75rem; }
+    #lab-owl-code-tracing .section-heading { text-align: center; }
+    #lab-owl-code-tracing .section-divider {
+      width: 5rem;
+      height: 3px;
+      margin: 0.75rem auto 1.25rem;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #002855 0%, #0070F0 50%, #97E152 100%);
+    }
+    #lab-owl-code-tracing .content { max-width: 48rem; margin-inline: auto; }
+    #lab-owl-code-tracing .flow > * + * { margin-top: 0.9rem; }
+    #lab-owl-code-tracing .flow > * + .panel,
+    #lab-owl-code-tracing .flow > .panel + * { margin-top: 1.25rem; }
+    #lab-owl-code-tracing .panel {
+      padding: 1.5rem;
+      border-left: 4px solid #0070F0;
+      border-radius: 1rem;
+      background: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 40, 85, 0.1);
+    }
+    #lab-owl-code-tracing .lab-owl-panel { border-left-color: #97E152; }
+    #lab-owl-code-tracing .activity-list { padding-left: 1.4rem; }
+    #lab-owl-code-tracing .activity-list li + li { margin-top: 0.6rem; }
+    #lab-owl-code-tracing .activity-list li::marker { color: #002855; }
+    @media (min-width: 768px) {
+      #lab-owl-code-tracing h1 { font-size: 48px !important; }
+      #lab-owl-code-tracing h2 { font-size: 30px !important; }
+    }
+    @media (min-width: 1024px) {
+      #lab-owl-code-tracing h1 { font-size: 60px !important; }
+    }
+    #lab-owl-code-tracing button { font: inherit; cursor: pointer; }
+    #lab-owl-code-tracing :is(button, [tabindex]):focus-visible { outline: 3px solid #0070F0; outline-offset: 3px; }
+    #lab-owl-code-tracing .practice-module {
+      max-width: 60rem;
+      margin-inline: auto;
+      overflow: hidden;
+      border: 1px solid #bed3eb;
+      border-left: 5px solid #97E152;
+      border-radius: 1rem;
+      box-shadow: 0 6px 20px rgba(0, 40, 85, 0.10);
+    }
+    #lab-owl-code-tracing .practice-launch {
+      padding: clamp(1.1rem, 4vw, 2rem);
+      background: linear-gradient(115deg, #002855, #123e6d);
+      color: #fff;
+    }
+    #lab-owl-code-tracing .practice-launch h2 { color: #fff; }
+    #lab-owl-code-tracing .strategy-options { display: grid; gap: 0.85rem; margin-top: 1.25rem; }
+
+    #lab-owl-code-tracing .strategy-choice {
+      position: relative;
+      display: grid;
+      align-content: start;
+      gap: 0.4rem;
+      min-width: 0;
+      padding: 1rem 2.65rem 1rem 1rem;
+      border: 2px solid transparent;
+      border-radius: 0.75rem;
+      background: #fff;
+      color: #002855;
+      text-align: left;
+    }
+    #lab-owl-code-tracing .strategy-choice b { font-size: 1.125rem; line-height: 1.3; }
+    #lab-owl-code-tracing .strategy-choice::after {
+      content: "";
+      position: absolute;
+      top: 1.35rem;
+      right: 1.15rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-top: 2px solid #0057b8;
+      border-right: 2px solid #0057b8;
+      transform: rotate(45deg);
+    }
+    #lab-owl-code-tracing .strategy-choice:hover,
+    #lab-owl-code-tracing .strategy-choice[aria-pressed="true"] {
+      border-color: #97E152;
+      background: #edf5ff;
+    }
+    #lab-owl-code-tracing .strategy-choice:focus-visible { outline-color: #97E152; }
+    #lab-owl-code-tracing .practice-panel {
+      border-top: 1px solid #46739e;
+      background: #fff;
+    }
+    #lab-owl-code-tracing .practice-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 4px solid #97E152;
+      background: #002855;
+      color: #fff;
+    }
+    #lab-owl-code-tracing .practice-header h3 { color: #fff; }
+    #lab-owl-code-tracing .practice-layout { display: grid; gap: 1rem; padding: clamp(0.8rem, 3vw, 1.5rem); }
+    @media (min-width: 880px) {
+      #lab-owl-code-tracing .practice-layout { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+    }
+    #lab-owl-code-tracing :is(.practice-code, .practice-chat) { min-width: 0; }
+    #lab-owl-code-tracing .practice-code h3 { font-size: 16px !important; overflow-wrap: anywhere; }
+    #lab-owl-code-tracing .practice-code pre {
+      margin: 0.65rem 0 0;
+      overflow: auto;
+      padding: 0.85rem;
+      border-radius: 0.65rem;
+      background: #002855;
+      color: #fff;
+      tab-size: 4;
+    }
+    #lab-owl-code-tracing .practice-code code { font: 14px/1.6 monospace !important; }
+    #lab-owl-code-tracing .practice-transcript {
+      max-height: 24rem;
+      overflow: auto;
+      padding: 0.75rem;
+      border: 1px solid #d8e7f5;
+      border-radius: 0.75rem;
+      background: #f4f8fd;
+    }
+    #lab-owl-code-tracing .practice-message {
+      max-width: 92%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.25rem 0.8rem 0.8rem;
+      background: #fff;
+      color: #002855;
+      overflow-wrap: anywhere;
+    }
+    #lab-owl-code-tracing .practice-message b { display: block; margin-bottom: 0.2rem; }
+    #lab-owl-code-tracing .practice-message.practice-reply {
+      margin-left: auto;
+      background: #002855;
+      color: #fff;
+      border-radius: 0.8rem 0.25rem 0.8rem 0.8rem;
+    }
+    #lab-owl-code-tracing .practice-feedback { padding: 0.65rem 0.8rem; border-left: 4px solid #97E152; background: #f1fae9; }
+    #lab-owl-code-tracing .practice-feedback.is-retry { border-left-color: #a76b0e; background: #fff5e5; }
+    #lab-owl-code-tracing .practice-choice {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #bed3eb;
+      border-radius: 0.55rem;
+      background: #fff;
+      color: #002855;
+      text-align: left;
+    }
+    #lab-owl-code-tracing .practice-choice:hover:not(:disabled) { background: #edf5ff; }
+    #lab-owl-code-tracing .practice-choice.is-retry { border-color: #a76b0e; }
+    #lab-owl-code-tracing .practice-action {
+      padding: 0.5rem 0.85rem;
+      border: 1px solid #0057b8;
+      border-radius: 0.5rem;
+      background: #0057b8;
+      color: #fff;
+      font-weight: 700;
+    }
+    #lab-owl-code-tracing .practice-secondary { background: #fff; color: #0057b8; }
+    @media (min-width: 640px) {
+      #lab-owl-code-tracing .strategy-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    #lab-owl-code-tracing .execution-example {
+      border: 1px solid #bed3eb;
+      border-radius: 0.75rem;
+      overflow: hidden;
+    }
+    #lab-owl-code-tracing .execution-example table { width: 100%; border-collapse: collapse; }
+    #lab-owl-code-tracing .execution-example caption {
+      padding: 0.8rem 1rem;
+      text-align: left;
+      font-weight: 700;
+      color: #002855;
+      background: #edf5ff;
+    }
+    #lab-owl-code-tracing .execution-example :is(th, td) { padding: 0.6rem 1rem; text-align: left; }
+    #lab-owl-code-tracing .execution-example thead { color: #fff; background: #002855; }
+    #lab-owl-code-tracing .execution-example tbody tr + tr { border-top: 1px solid #bed3eb; }
+    #lab-owl-code-tracing .execution-example tbody tr:nth-child(even) { background: #f4f8fd; }
+    #lab-owl-code-tracing .execution-example code { font-family: monospace !important; }
+  </style>
+</head>
+<body>
+  <div id="lab-owl-code-tracing">
+    <header class="banner">
+      <div class="banner-pattern" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="lab-owl-code-tracing-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+              <circle cx="40" cy="40" r="1" fill="#FFFFFF"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#lab-owl-code-tracing-pattern)"/>
+        </svg>
+      </div>
+      <div class="banner-content">
+        <div class="banner-label"><span class="banner-dot" aria-hidden="true"></span>LAB OWL</div>
+        <h1>Code Tracing &amp; Execution Simulation</h1>
+        <p>Help students follow program execution step by step and track how values change.</p>
+      </div>
+      <svg class="banner-wave" viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80V40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0Z" fill="#FFFFFF"/>
+      </svg>
+    </header>
+
+    <main>
+      <section aria-labelledby="code-tracing">
+        <h2 class="section-heading" id="code-tracing">Code Tracing</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content flow">
+          <p>Code tracing helps students simulate what the program is doing step by step. The student pauses and manually follows the logic. For example, they might track how a variable changes inside a loop.</p>
+          <div class="panel lab-owl-panel flow">
+            <h3>You Might Ask</h3>
+            <ul class="activity-list">
+              <li>“What value does this variable start with?”</li>
+              <li>“What happens to that value after this line runs?”</li>
+              <li>“What do you expect the variable to be after the loop finishes?”</li>
+            </ul>
+          </div>
+          <p>Tracing helps students understand how the program executes. This strategy works well during <strong>Analyze What’s Happening</strong>.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="execution-simulation">
+        <h2 class="section-heading" id="execution-simulation">Execution Simulation</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content flow">
+          <p>Execution simulation is a visual form of code tracing. Students create a simple table to track what happens during program execution.</p>
+          <div class="execution-example">
+            <table>
+              <caption>Example trace for a loop that adds 2, 4, and 6</caption>
+              <thead><tr><th scope="col">Step</th><th scope="col">Variable Value</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Start</th><td><code>total = 0</code></td></tr>
+                <tr><th scope="row">Loop 1</th><td><code>total = 2</code></td></tr>
+                <tr><th scope="row">Loop 2</th><td><code>total = 6</code></td></tr>
+                <tr><th scope="row">Loop 3</th><td><code>total = 12</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The table makes it easier to see what the computer is doing and spot where execution diverges from what the student expected. This strategy works well during <strong>Break It Down</strong> and <strong>Observe the Pattern</strong>.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="practice-strategies">
+        <div class="practice-module">
+          <div class="practice-launch flow">
+            <h2 id="practice-strategies">Practice Both Strategies</h2>
+            <p>Choose a strategy and respond as the Peer Navigator.</p>
+            <div id="strategy-options" class="strategy-options"></div>
+            <noscript><p>Enable JavaScript to use the practice simulator.</p></noscript>
+          </div>
+          <div class="practice-panel" id="strategy-simulation" hidden>
+            <header class="practice-header">
+              <div><h3 id="strategy-title"></h3><p id="practice-progress"></p></div>
+              <button id="practice-back" type="button" class="practice-action practice-secondary">Back to strategies</button>
+            </header>
+            <div class="practice-layout">
+              <div class="practice-code">
+                <h3 id="practice-filename"></h3>
+                <pre tabindex="0" aria-labelledby="practice-filename"><code id="practice-code"></code></pre>
+              </div>
+              <div class="flow practice-chat">
+                <div id="practice-transcript" class="flow practice-transcript" role="log" aria-label="Conversation" tabindex="0"></div>
+                <div class="flow" id="practice-responses"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const scenarios = {"tracing":{"icon":"🔍","title":"Code Tracing","hint":"Help a student follow a loop line by line.","filename":"counter_loop.py","code":"total = 0\nfor i in range(1, 4):\n    total = total + i\n    print(f\"After iteration {i}: total = {total}\")\n\nprint(f\"Final total: {total}\")","conversation":[{"speaker":"student","message":"I expected my loop to add 1 + 2 + 3 and get 6, but I saw a total of 3 on my last run. Can we walk through the code to figure out what it should print?","options":[{"text":"Change range(1, 4) to range(1, 5).","correct":false,"feedback":"That would make it worse! Instead, help them trace through the execution. What does the loop actually do step by step?"},{"text":"Let's trace through this manually. What's the initial value of total before the loop starts?","correct":true,"feedback":"Perfect! Code tracing starts with the beginning state. By walking through step by step, they'll spot what's happening."},{"text":"Your loop logic is backwards.","correct":false,"feedback":"Let's find out together by tracing it. Help them see what total equals at each step, starting with the initial value."}]},{"speaker":"student","message":"total starts at 0. Then in the first iteration, i = 1, so total = 0 + 1 = 1. Got it so far.","options":[{"text":"That's correct so far.","correct":false,"feedback":"Keep going! Help them trace the next iteration. When i = 2, what does total become?"},{"text":"Right, and then the loop ends.","correct":false,"feedback":"The loop doesn't end after one iteration! Continue tracing. What happens when i = 2? What's total then?"},{"text":"Good! Now in iteration 2, i = 2. What does total equal after that line runs?","correct":true,"feedback":"Excellent! You're guiding them through execution state by state. This is the power of code tracing."}]},{"speaker":"student","message":"So if total was 1 after iteration 1, then in iteration 2: total = 1 + 2 = 3.","options":[{"text":"Perfect! Now iteration 3: i = 3. What is total after that line?","correct":true,"feedback":"You're helping the student trace the full loop. The third iteration shows whether 3 is the final total or an intermediate value."},{"text":"That's the final answer.","correct":false,"feedback":"Wait, the range is 1 to 3, so there should be one more iteration with i = 3. What's total then?"},{"text":"Yes, then it stops.","correct":false,"feedback":"No, there's one more iteration! The range goes 1, 2, 3. What happens when i = 3?"}]},{"speaker":"student","message":"Oh! When i = 3, total = 3 + 3 = 6. So the final total should be 6!","options":[{"text":"Your code should multiply instead.","correct":false,"feedback":"No, the tracing shows the addition is working correctly. By step 3, total should indeed be 6. Have them run the code again."},{"text":"Your trace predicts a final total of 6. Can you run this version and compare each printed line with your trace?","correct":true,"feedback":"The trace predicts a total of 3 after the second iteration and 6 at the end. Comparing the run with the trace helps the student distinguish an intermediate value from the final result."},{"text":"Now add i to the total.","correct":false,"feedback":"That's what the code already does! By tracing through, they've shown the code should work correctly. Let them run it to verify."}]}]},"simulation":{"icon":"📊","title":"Execution Simulation","hint":"Guide a student through tracking variable changes in a table.","filename":"processing_list.py","code":"items = [2, 4, 6]\ntotal = 0\nfor item in items:\n    total = total + item\n\nprint(total)","conversation":[{"speaker":"student","message":"I wrote this code to sum up the items in my list [2, 4, 6], but I can't tell if it's working right. How do I know what total should be at each step?","options":[{"text":"Just add print statements inside the loop.","correct":false,"feedback":"That works, but first help them visualize the process with a table. This builds deeper understanding before using debug tools."},{"text":"The answer should be 12.","correct":false,"feedback":"That's the expected output, but help them create a table to verify each step. This teaches them to predict before running."},{"text":"Great question! Let's create an execution table to track what happens. First, what's the starting state before the loop?","correct":true,"feedback":"Perfect! An execution table makes the invisible process visible. This is exactly when execution simulation shines."}]},{"speaker":"student","message":"OK, so before the loop: items = [2, 4, 6] and total = 0. Should I write that down?","options":[{"text":"Yes! Now make a table with columns for Step, item, and total. Put 'Start' as the first row with item = (none) and total = 0.","correct":true,"feedback":"Excellent! Now they're building a visual record of execution. This is the power of execution simulation—making internal state visible."},{"text":"Write that as row 1 of the table.","correct":false,"feedback":"Perfect idea! But help them think about the column headers first. What variables should they track?"},{"text":"Good, now run the loop.","correct":false,"feedback":"Before running it, help them build the full table manually. This way they predict what should happen, then verify it."}]},{"speaker":"student","message":"I made a table! Step | item | total. Now in the first iteration, item = 2, so total = 0 + 2 = 2. Should I add that as row 2?","options":[{"text":"That's correct.","correct":false,"feedback":"Right! Now help them continue. What's the next row? Iteration 2: item = 4. What's the new total?"},{"text":"Exactly! Add 'Iteration 1' in the Step column with item = 2 and total = 2. Now what happens in iteration 2?","correct":true,"feedback":"Great! They're building the simulation table step by step. Now they can see the pattern emerging."},{"text":"Yes, keep going.","correct":false,"feedback":"Good, but guide them more explicitly. Have them write out iteration 2: item = 4, so total = 2 + 4 = ?"}]},{"speaker":"student","message":"Iteration 2: item = 4, so total = 2 + 4 = 6. And then Iteration 3: item = 6, so total = 6 + 6 = 12!","options":[{"text":"Great, you're done.","correct":false,"feedback":"Almost! They've predicted the answer (12). Now have them run the code to verify their table was correct."},{"text":"Your code looks good.","correct":false,"feedback":"It does! But help them complete the learning by running the code and seeing if it matches their simulation table's prediction."},{"text":"Perfect! So your table predicts total should be 12 after the loop. Now run your code and see if it prints 12!","correct":true,"feedback":"Excellent! They predicted the output by building the table, and now they can verify it matches. This is powerful—understand first, then confirm."}]},{"speaker":"student","message":"I ran it and it printed 12! So the code works, and the execution table helped me understand exactly how! Each step was clear: starting at 0, then 2, then 6, then 12. I get it now!","options":[{"text":"That's exactly it! By simulating the execution in a table, you could see the full picture and verify your code works. This is how execution simulation helps debug!","correct":true,"feedback":"Perfect! You helped them see that execution simulation makes the invisible process visible, giving confidence the code is correct or helping spot where it goes wrong."},{"text":"Great job!","correct":false,"feedback":"Yes! But take this moment to reinforce why the table was so useful. This reflection helps them learn when to use execution simulation in the future."},{"text":"Now do it for more complex code.","correct":false,"feedback":"Good idea for practice, but first celebrate that execution simulation helped them understand this one completely. They can apply it to harder code next!"}]}]}};
+      const byId = id => document.getElementById(id);
+      const create = (tag, text, className) => {
+        const element = document.createElement(tag);
+        if (text) element.textContent = text;
+        if (className) element.className = className;
+        if (tag === 'button') element.type = 'button';
+        return element;
+      };
+      const selector = byId('strategy-options');
+      const panel = byId('strategy-simulation');
+      const transcript = byId('practice-transcript');
+      const responses = byId('practice-responses');
+      const progress = byId('practice-progress');
+      let active;
+      let currentStep;
+
+      function appendMessage(label, text, className = '') {
+        const block = create('div', '', 'practice-message ' + className);
+        block.append(create('b', label), create('p', text));
+        transcript.append(block);
+        transcript.scrollTop = transcript.scrollHeight;
+      }
+
+      function returnToStrategies() {
+        panel.hidden = true;
+        transcript.replaceChildren();
+        responses.replaceChildren();
+        active.setAttribute('aria-pressed', 'false');
+        active.focus();
+        active = null;
+      }
+
+      function showStep(sim, focus) {
+        const step = sim.conversation[currentStep];
+        progress.textContent = 'Step ' + (currentStep + 1) + ' of ' + sim.conversation.length;
+        appendMessage('Student', step.message);
+        const heading = create('h3', 'How would you respond?');
+        heading.tabIndex = -1;
+        const controls = step.options.map(option => create('button', option.text, 'practice-choice'));
+        const feedback = create('div');
+        feedback.setAttribute('role', 'status');
+        feedback.hidden = true;
+        responses.replaceChildren(heading, ...controls, feedback);
+
+        controls.forEach((control, index) => {
+          control.addEventListener('click', () => {
+            const option = step.options[index];
+            appendMessage('You (Peer Navigator)', option.text, 'practice-reply');
+            feedback.className = 'practice-feedback' + (option.correct ? '' : ' is-retry');
+            feedback.hidden = false;
+            feedback.textContent = option.feedback;
+            if (!option.correct) {
+              control.classList.add('is-retry');
+              control.disabled = true;
+              controls.find(button => !button.disabled)?.focus();
+              return;
+            }
+            controls.forEach(button => { button.disabled = true; });
+            const last = currentStep === sim.conversation.length - 1;
+            const next = create('button', last ? 'Finish scenario' : 'Continue', 'practice-action');
+            next.addEventListener('click', () => {
+              if (!last) {
+                currentStep += 1;
+                showStep(sim, true);
+                return;
+              }
+              progress.textContent = 'Scenario complete';
+              const title = create('h3', 'Scenario complete');
+              title.tabIndex = -1;
+              const again = create('button', 'Back to strategies', 'practice-action');
+              again.addEventListener('click', returnToStrategies);
+              responses.replaceChildren(title, again);
+              title.focus();
+            });
+            responses.append(next);
+            next.focus();
+          });
+        });
+        if (focus) heading.focus();
+      }
+
+      for (const sim of Object.values(scenarios)) {
+        const button = create('button', '', 'strategy-choice');
+        button.setAttribute('aria-controls', 'strategy-simulation');
+        button.setAttribute('aria-pressed', 'false');
+        button.append(create('b', sim.title), create('span', sim.hint));
+        button.addEventListener('click', () => {
+          if (active) active.setAttribute('aria-pressed', 'false');
+          active = button;
+          active.setAttribute('aria-pressed', 'true');
+          currentStep = 0;
+          byId('strategy-title').textContent = sim.title;
+          byId('practice-filename').textContent = sim.filename;
+          byId('practice-code').textContent = sim.code;
+          transcript.replaceChildren();
+          panel.hidden = false;
+          showStep(sim, true);
+        });
+        selector.append(button);
+      }
+      byId('practice-back').addEventListener('click', returnToStrategies);
+    })();
+  </script>
+</body>
+</html>
