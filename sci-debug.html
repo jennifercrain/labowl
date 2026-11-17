@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Debugging</title>
+  <style>
+    body { margin: 0; }
+    #lab-owl-scientific-debugging, #lab-owl-scientific-debugging * {
+      box-sizing: border-box;
+      font-family: Arial, "Liberation Sans", sans-serif !important;
+    }
+    #lab-owl-scientific-debugging {
+      color: #000000;
+      background: #FFFFFF;
+      font-size: 16px !important;
+      line-height: 1.55;
+    }
+    #lab-owl-scientific-debugging h1, #lab-owl-scientific-debugging h2, #lab-owl-scientific-debugging h3,
+    #lab-owl-scientific-debugging p, #lab-owl-scientific-debugging ul { margin: 0; }
+    #lab-owl-scientific-debugging :is(p, li, .banner-label) { font-size: 16px !important; }
+    #lab-owl-scientific-debugging h1 { font-size: 36px !important; line-height: 1.1; }
+    #lab-owl-scientific-debugging h2 { font-size: 24px !important; line-height: 1.2; color: #002855; }
+    #lab-owl-scientific-debugging h3 { font-size: 20px !important; line-height: 1.25; color: #002855; }
+    #lab-owl-scientific-debugging strong { color: #0070F0; }
+    #lab-owl-scientific-debugging .banner {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #002855, #0070F0);
+      color: #FFFFFF;
+      text-align: center;
+    }
+    #lab-owl-scientific-debugging .banner-pattern { position: absolute; inset: 0; opacity: 0.05; pointer-events: none; }
+    #lab-owl-scientific-debugging .banner-content { position: relative; padding: 5rem 1.5rem; }
+    #lab-owl-scientific-debugging .banner-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 999px;
+      background: rgba(151, 225, 82, 0.2);
+      color: #97E152;
+      font-weight: 500;
+    }
+    #lab-owl-scientific-debugging .banner-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #97E152; }
+    #lab-owl-scientific-debugging .banner p { max-width: 48rem; margin: 1.5rem auto 0; color: rgba(255, 255, 255, 0.95); }
+    #lab-owl-scientific-debugging .banner-wave { display: block; width: 100%; margin-bottom: -1px; }
+    #lab-owl-scientific-debugging main { max-width: 72rem; padding: 0 1.5rem 2rem; margin: 0 auto; }
+    #lab-owl-scientific-debugging main > section { padding-block: 0.75rem; }
+    #lab-owl-scientific-debugging main > section + section { padding-top: 2.75rem; }
+    #lab-owl-scientific-debugging .section-heading { text-align: center; }
+    #lab-owl-scientific-debugging .section-divider {
+      width: 5rem;
+      height: 3px;
+      margin: 0.75rem auto 1.25rem;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #002855 0%, #0070F0 50%, #97E152 100%);
+    }
+    #lab-owl-scientific-debugging .content { max-width: 48rem; margin-inline: auto; }
+    #lab-owl-scientific-debugging .flow > * + * { margin-top: 0.9rem; }
+    #lab-owl-scientific-debugging .flow > * + .panel,
+    #lab-owl-scientific-debugging .flow > .panel + * { margin-top: 1.25rem; }
+    #lab-owl-scientific-debugging .panel {
+      padding: 1.5rem;
+      border-left: 4px solid #0070F0;
+      border-radius: 1rem;
+      background: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 40, 85, 0.1);
+    }
+    #lab-owl-scientific-debugging .lab-owl-panel { border-left-color: #97E152; }
+    #lab-owl-scientific-debugging .activity-list { padding-left: 1.4rem; }
+    #lab-owl-scientific-debugging .activity-list li + li { margin-top: 0.6rem; }
+    #lab-owl-scientific-debugging .activity-list li::marker { color: #002855; }
+    @media (min-width: 768px) {
+      #lab-owl-scientific-debugging h1 { font-size: 48px !important; }
+      #lab-owl-scientific-debugging h2 { font-size: 30px !important; }
+    }
+    @media (min-width: 1024px) {
+      #lab-owl-scientific-debugging h1 { font-size: 60px !important; }
+    }
+    #lab-owl-scientific-debugging button { font: inherit; cursor: pointer; }
+    #lab-owl-scientific-debugging :is(button, [tabindex]):focus-visible { outline: 3px solid #0070F0; outline-offset: 3px; }
+    #lab-owl-scientific-debugging .practice-module {
+      max-width: 60rem;
+      margin-inline: auto;
+      overflow: hidden;
+      border: 1px solid #bed3eb;
+      border-left: 5px solid #97E152;
+      border-radius: 1rem;
+      box-shadow: 0 6px 20px rgba(0, 40, 85, 0.10);
+    }
+    #lab-owl-scientific-debugging .practice-launch {
+      padding: clamp(1.1rem, 4vw, 2rem);
+      background: linear-gradient(115deg, #002855, #123e6d);
+      color: #fff;
+    }
+    #lab-owl-scientific-debugging .practice-launch h2 { color: #fff; }
+    #lab-owl-scientific-debugging .strategy-options { display: grid; gap: 0.85rem; margin-top: 1.25rem; }
+
+    #lab-owl-scientific-debugging .strategy-choice {
+      position: relative;
+      display: grid;
+      align-content: start;
+      gap: 0.4rem;
+      min-width: 0;
+      padding: 1rem 2.65rem 1rem 1rem;
+      border: 2px solid transparent;
+      border-radius: 0.75rem;
+      background: #fff;
+      color: #002855;
+      text-align: left;
+    }
+    #lab-owl-scientific-debugging .strategy-choice b { font-size: 1.125rem; line-height: 1.3; }
+    #lab-owl-scientific-debugging .strategy-choice::after {
+      content: "";
+      position: absolute;
+      top: 1.35rem;
+      right: 1.15rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-top: 2px solid #0057b8;
+      border-right: 2px solid #0057b8;
+      transform: rotate(45deg);
+    }
+    #lab-owl-scientific-debugging .strategy-choice:hover,
+    #lab-owl-scientific-debugging .strategy-choice[aria-pressed="true"] {
+      border-color: #97E152;
+      background: #edf5ff;
+    }
+    #lab-owl-scientific-debugging .strategy-choice:focus-visible { outline-color: #97E152; }
+    #lab-owl-scientific-debugging .practice-panel {
+      border-top: 1px solid #46739e;
+      background: #fff;
+    }
+    #lab-owl-scientific-debugging .practice-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 4px solid #97E152;
+      background: #002855;
+      color: #fff;
+    }
+    #lab-owl-scientific-debugging .practice-header h3 { color: #fff; }
+    #lab-owl-scientific-debugging .practice-layout { display: grid; gap: 1rem; padding: clamp(0.8rem, 3vw, 1.5rem); }
+    @media (min-width: 880px) {
+      #lab-owl-scientific-debugging .practice-layout { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+    }
+    #lab-owl-scientific-debugging :is(.practice-code, .practice-chat) { min-width: 0; }
+    #lab-owl-scientific-debugging .practice-code h3 { font-size: 16px !important; overflow-wrap: anywhere; }
+    #lab-owl-scientific-debugging .practice-code pre {
+      margin: 0.65rem 0 0;
+      overflow: auto;
+      padding: 0.85rem;
+      border-radius: 0.65rem;
+      background: #002855;
+      color: #fff;
+      tab-size: 4;
+    }
+    #lab-owl-scientific-debugging .practice-code code { font: 14px/1.6 monospace !important; }
+    #lab-owl-scientific-debugging .practice-transcript {
+      max-height: 24rem;
+      overflow: auto;
+      padding: 0.75rem;
+      border: 1px solid #d8e7f5;
+      border-radius: 0.75rem;
+      background: #f4f8fd;
+    }
+    #lab-owl-scientific-debugging .practice-message {
+      max-width: 92%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.25rem 0.8rem 0.8rem;
+      background: #fff;
+      color: #002855;
+      overflow-wrap: anywhere;
+    }
+    #lab-owl-scientific-debugging .practice-message b { display: block; margin-bottom: 0.2rem; }
+    #lab-owl-scientific-debugging .practice-message.practice-reply {
+      margin-left: auto;
+      background: #002855;
+      color: #fff;
+      border-radius: 0.8rem 0.25rem 0.8rem 0.8rem;
+    }
+    #lab-owl-scientific-debugging .practice-feedback { padding: 0.65rem 0.8rem; border-left: 4px solid #97E152; background: #f1fae9; }
+    #lab-owl-scientific-debugging .practice-feedback.is-retry { border-left-color: #a76b0e; background: #fff5e5; }
+    #lab-owl-scientific-debugging .practice-choice {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #bed3eb;
+      border-radius: 0.55rem;
+      background: #fff;
+      color: #002855;
+      text-align: left;
+    }
+    #lab-owl-scientific-debugging .practice-choice:hover:not(:disabled) { background: #edf5ff; }
+    #lab-owl-scientific-debugging .practice-choice.is-retry { border-color: #a76b0e; }
+    #lab-owl-scientific-debugging .practice-action {
+      padding: 0.5rem 0.85rem;
+      border: 1px solid #0057b8;
+      border-radius: 0.5rem;
+      background: #0057b8;
+      color: #fff;
+      font-weight: 700;
+    }
+    #lab-owl-scientific-debugging .practice-secondary { background: #fff; color: #0057b8; }
+  </style>
+</head>
+<body>
+  <div id="lab-owl-scientific-debugging">
+    <header class="banner">
+      <div class="banner-pattern" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="lab-owl-scientific-debugging-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+              <circle cx="40" cy="40" r="1" fill="#FFFFFF"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#lab-owl-scientific-debugging-pattern)"/>
+        </svg>
+      </div>
+      <div class="banner-content">
+        <div class="banner-label"><span class="banner-dot" aria-hidden="true"></span>LAB OWL</div>
+        <h1>Scientific Debugging</h1>
+        <p>Help students form a hypothesis, predict the result, and test it.</p>
+      </div>
+      <svg class="banner-wave" viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80V40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0Z" fill="#FFFFFF"/>
+      </svg>
+    </header>
+
+    <main>
+      <section aria-labelledby="scientific-debugging">
+        <h2 class="section-heading" id="scientific-debugging">Debugging as an Experiment</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content flow">
+          <p>Scientific debugging treats coding problems like an experiment. The student forms a hypothesis, tests it, and observes the result. In a session, the Peer Navigator helps the student make predictions <em>before</em> running the code.</p>
+          <div class="panel lab-owl-panel flow">
+            <h3>You Might Ask</h3>
+            <ul class="activity-list">
+              <li>“What do you think is causing this behavior?”</li>
+              <li>“If we change this variable, what do you expect to happen?”</li>
+              <li>“What result would confirm that idea?”</li>
+            </ul>
+          </div>
+          <p>Predicting the result makes the test <em>intentional</em> and gives the student something specific to look for. This strategy fits especially well during <strong>Work the Hypothesis</strong> in the Lab Owl process.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="practice-strategies">
+        <div class="practice-module">
+          <div class="practice-launch flow">
+            <h2 id="practice-strategies">Practice Scientific Debugging</h2>
+            <p>Respond as the Peer Navigator and help the student test a hypothesis across four steps.</p>
+            <div id="strategy-options" class="strategy-options"></div>
+            <noscript><p>Enable JavaScript to use the practice simulator.</p></noscript>
+          </div>
+          <div class="practice-panel" id="strategy-simulation" hidden>
+            <header class="practice-header">
+              <div><h3 id="strategy-title"></h3><p id="practice-progress"></p></div>
+              <button id="practice-back" type="button" class="practice-action practice-secondary">Close practice</button>
+            </header>
+            <div class="practice-layout">
+              <div class="practice-code">
+                <h3 id="practice-filename"></h3>
+                <pre tabindex="0" aria-labelledby="practice-filename"><code id="practice-code"></code></pre>
+              </div>
+              <div class="flow practice-chat">
+                <div id="practice-transcript" class="flow practice-transcript" role="log" aria-label="Conversation" tabindex="0"></div>
+                <div class="flow" id="practice-responses"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const scenarios = {"scientific":{"icon":"🔬","title":"Scientific Debugging","hint":"Guide a student through a Python boundary-condition bug.","filename":"user_validation.py","code":"def validate_age(age):\n    if age > 18:\n        return \"Adult\"\n    else:\n        return \"Minor\"\n\n# Test cases\nprint(validate_age(17))\nprint(validate_age(18))\nprint(validate_age(19))","conversation":[{"speaker":"student","message":"Hey! My age validation function is acting weird. When I test with 18, it says 'Minor' but 18-year-olds should be adults! The 17 and 19 cases work fine though.","options":[{"text":"The problem is your > operator. It should be >=.","correct":false,"feedback":"You're giving away the answer directly. With scientific debugging, guide students to hypothesize first before revealing solutions."},{"text":"What do you think might be causing this behavior? What's different about 18?","correct":true,"feedback":"Perfect! You're asking them to form a hypothesis about what's causing the bug. This is the core of scientific debugging."},{"text":"Let's add some print statements to debug this.","correct":false,"feedback":"While debugging tools are useful, scientific debugging starts with forming hypotheses based on observations. What does the pattern tell them?"}]},{"speaker":"student","message":"Hmm, well 18 works differently than 17 and 19... If all the other cases work, maybe something is wrong with how I'm checking 18 specifically? Or maybe my condition is off by one somehow?","options":[{"text":"Yes, look at line 2. Change > to >=.","correct":false,"feedback":"Don't teach the fix yet. Let the student predict what would happen if the boundary condition (> vs >=) is the issue."},{"text":"You probably need a special case for 18.","correct":false,"feedback":"This leads them toward an incorrect solution. Help them predict what would confirm their hypothesis about the boundary condition."},{"text":"Good thinking! What result would confirm if the condition is off by one?","correct":true,"feedback":"Excellent! You're helping them predict what evidence would confirm their hypothesis—this is the testing phase of scientific debugging."}]},{"speaker":"student","message":"Oh! If it's an off-by-one error with the > operator... I could test what happens if I change it to >=. If I use >=, then 18 should return 'Adult' instead of 'Minor'!","options":[{"text":"Exactly! Make that change and test it. What happens?","correct":true,"feedback":"Perfect! You guided them through hypothesis → prediction → testing. Now they execute the experiment to confirm their hypothesis."},{"text":"Good hypothesis. Let's also check the else block.","correct":false,"feedback":"Stay focused on their current hypothesis. Let them confirm it works before moving to other parts of the code."},{"text":"That's right, change > to >=.","correct":false,"feedback":"You're confirming but not continuing to guide them through the full scientific process. Help them recognize they should test their prediction."}]},{"speaker":"student","message":"I changed it to >= and... yes! Now all three test cases work! 17 is 'Minor', 18 is 'Adult', and 19 is 'Adult'. The boundary was wrong!","options":[{"text":"Now test more edge cases.","correct":false,"feedback":"Don't push them beyond their current success. Take a moment to reflect on the scientific debugging process they just used."},{"text":"Fantastic! You formed a hypothesis, predicted the outcome, and confirmed it through testing. That's scientific debugging! Why was this approach better than random trial and error?","correct":true,"feedback":"Excellent! You're helping them reflect on the method itself, building metacognitive awareness of this powerful debugging strategy."},{"text":"Great, you fixed it!","correct":false,"feedback":"While accurate, this misses the opportunity to reinforce the scientific method and help them understand why this approach worked so well."}]}]}};
+      const byId = id => document.getElementById(id);
+      const create = (tag, text, className) => {
+        const element = document.createElement(tag);
+        if (text) element.textContent = text;
+        if (className) element.className = className;
+        if (tag === 'button') element.type = 'button';
+        return element;
+      };
+      const selector = byId('strategy-options');
+      const panel = byId('strategy-simulation');
+      const transcript = byId('practice-transcript');
+      const responses = byId('practice-responses');
+      const progress = byId('practice-progress');
+      let active;
+      let currentStep;
+
+      function appendMessage(label, text, className = '') {
+        const block = create('div', '', 'practice-message ' + className);
+        block.append(create('b', label), create('p', text));
+        transcript.append(block);
+        transcript.scrollTop = transcript.scrollHeight;
+      }
+
+      function returnToStrategies() {
+        panel.hidden = true;
+        transcript.replaceChildren();
+        responses.replaceChildren();
+        active.setAttribute('aria-pressed', 'false');
+        active.focus();
+        active = null;
+      }
+
+      function showStep(sim, focus) {
+        const step = sim.conversation[currentStep];
+        progress.textContent = 'Step ' + (currentStep + 1) + ' of ' + sim.conversation.length;
+        appendMessage('Student', step.message);
+        const heading = create('h3', 'How would you respond?');
+        heading.tabIndex = -1;
+        const controls = step.options.map(option => create('button', option.text, 'practice-choice'));
+        const feedback = create('div');
+        feedback.setAttribute('role', 'status');
+        feedback.hidden = true;
+        responses.replaceChildren(heading, ...controls, feedback);
+
+        controls.forEach((control, index) => {
+          control.addEventListener('click', () => {
+            const option = step.options[index];
+            appendMessage('You (Peer Navigator)', option.text, 'practice-reply');
+            feedback.className = 'practice-feedback' + (option.correct ? '' : ' is-retry');
+            feedback.hidden = false;
+            feedback.textContent = option.feedback;
+            if (!option.correct) {
+              control.classList.add('is-retry');
+              control.disabled = true;
+              controls.find(button => !button.disabled)?.focus();
+              return;
+            }
+            controls.forEach(button => { button.disabled = true; });
+            const last = currentStep === sim.conversation.length - 1;
+            const next = create('button', last ? 'Finish scenario' : 'Continue', 'practice-action');
+            next.addEventListener('click', () => {
+              if (!last) {
+                currentStep += 1;
+                showStep(sim, true);
+                return;
+              }
+              progress.textContent = 'Scenario complete';
+              const title = create('h3', 'Scenario complete');
+              title.tabIndex = -1;
+              const again = create('button', 'Practice again', 'practice-action');
+              again.addEventListener('click', () => active.click());
+              responses.replaceChildren(title, again);
+              title.focus();
+            });
+            responses.append(next);
+            next.focus();
+          });
+        });
+        if (focus) heading.focus();
+      }
+
+      for (const sim of Object.values(scenarios)) {
+        const button = create('button', '', 'strategy-choice');
+        button.setAttribute('aria-controls', 'strategy-simulation');
+        button.setAttribute('aria-pressed', 'false');
+        button.append(create('b', 'Start the simulation'), create('span', sim.hint));
+        button.addEventListener('click', () => {
+          if (active) active.setAttribute('aria-pressed', 'false');
+          active = button;
+          active.setAttribute('aria-pressed', 'true');
+          currentStep = 0;
+          byId('strategy-title').textContent = 'Python Age Validation';
+          byId('practice-filename').textContent = sim.filename;
+          byId('practice-code').textContent = sim.code;
+          transcript.replaceChildren();
+          panel.hidden = false;
+          showStep(sim, true);
+        });
+        selector.append(button);
+      }
+      byId('practice-back').addEventListener('click', returnToStrategies);
+    })();
+  </script>
+</body>
+</html>
