@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rubber Duck Debugging &amp; Pseudocode Reframing</title>
+  <style>
+    body { margin: 0; }
+    #lab-owl-debugging-strategies, #lab-owl-debugging-strategies * {
+      box-sizing: border-box;
+      font-family: Arial, "Liberation Sans", sans-serif !important;
+    }
+    #lab-owl-debugging-strategies {
+      color: #000000;
+      background: #FFFFFF;
+      font-size: 16px !important;
+      line-height: 1.55;
+    }
+    #lab-owl-debugging-strategies h1, #lab-owl-debugging-strategies h2, #lab-owl-debugging-strategies h3,
+    #lab-owl-debugging-strategies p, #lab-owl-debugging-strategies ul { margin: 0; }
+    #lab-owl-debugging-strategies :is(p, li, .banner-label) { font-size: 16px !important; }
+    #lab-owl-debugging-strategies h1 { font-size: 36px !important; line-height: 1.1; }
+    #lab-owl-debugging-strategies h2 { font-size: 24px !important; line-height: 1.2; color: #002855; }
+    #lab-owl-debugging-strategies h3 { font-size: 20px !important; line-height: 1.25; color: #002855; }
+    #lab-owl-debugging-strategies strong { color: #0070F0; }
+    #lab-owl-debugging-strategies .banner {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #002855, #0070F0);
+      color: #FFFFFF;
+      text-align: center;
+    }
+    #lab-owl-debugging-strategies .banner-pattern { position: absolute; inset: 0; opacity: 0.05; pointer-events: none; }
+    #lab-owl-debugging-strategies .banner-content { position: relative; padding: 5rem 1.5rem; }
+    #lab-owl-debugging-strategies .banner-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 999px;
+      background: rgba(151, 225, 82, 0.2);
+      color: #97E152;
+      font-weight: 500;
+    }
+    #lab-owl-debugging-strategies .banner-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #97E152; }
+    #lab-owl-debugging-strategies .banner p { max-width: 48rem; margin: 1.5rem auto 0; color: rgba(255, 255, 255, 0.95); }
+    #lab-owl-debugging-strategies .banner-wave { display: block; width: 100%; margin-bottom: -1px; }
+    #lab-owl-debugging-strategies main { max-width: 72rem; padding: 0 1.5rem 2rem; margin: 0 auto; }
+    #lab-owl-debugging-strategies main > section { padding-block: 0.75rem; }
+    #lab-owl-debugging-strategies main > section + section { padding-top: 2.75rem; }
+    #lab-owl-debugging-strategies .section-heading { text-align: center; }
+    #lab-owl-debugging-strategies .section-divider {
+      width: 5rem;
+      height: 3px;
+      margin: 0.75rem auto 1.25rem;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #002855 0%, #0070F0 50%, #97E152 100%);
+    }
+    #lab-owl-debugging-strategies .content { max-width: 48rem; margin-inline: auto; }
+    #lab-owl-debugging-strategies .flow > * + * { margin-top: 0.9rem; }
+    #lab-owl-debugging-strategies .flow > * + .panel,
+    #lab-owl-debugging-strategies .flow > .panel + * { margin-top: 1.25rem; }
+    #lab-owl-debugging-strategies .panel {
+      padding: 1.5rem;
+      border-left: 4px solid #0070F0;
+      border-radius: 1rem;
+      background: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 40, 85, 0.1);
+    }
+    #lab-owl-debugging-strategies .lab-owl-panel { border-left-color: #97E152; }
+    #lab-owl-debugging-strategies .activity-list { padding-left: 1.4rem; }
+    #lab-owl-debugging-strategies .activity-list li + li { margin-top: 0.6rem; }
+    #lab-owl-debugging-strategies .activity-list li::marker { color: #002855; }
+    @media (min-width: 768px) {
+      #lab-owl-debugging-strategies h1 { font-size: 48px !important; }
+      #lab-owl-debugging-strategies h2 { font-size: 30px !important; }
+    }
+    @media (min-width: 1024px) {
+      #lab-owl-debugging-strategies h1 { font-size: 60px !important; }
+    }
+    #lab-owl-debugging-strategies button { font: inherit; cursor: pointer; }
+    #lab-owl-debugging-strategies :is(button, [tabindex]):focus-visible { outline: 3px solid #0070F0; outline-offset: 3px; }
+    #lab-owl-debugging-strategies .practice-launch {
+      max-width: 60rem;
+      margin-inline: auto;
+      padding: clamp(1.1rem, 4vw, 2rem);
+      border-left: 5px solid #97E152;
+      border-radius: 1rem;
+      background: linear-gradient(115deg, #002855, #123e6d);
+      color: #fff;
+    }
+    #lab-owl-debugging-strategies .practice-launch h2 { color: #fff; }
+    #lab-owl-debugging-strategies .strategy-options { display: grid; gap: 0.85rem; margin-top: 1.25rem; }
+    @media (min-width: 640px) {
+      #lab-owl-debugging-strategies .strategy-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    #lab-owl-debugging-strategies .strategy-choice {
+      position: relative;
+      display: grid;
+      align-content: start;
+      gap: 0.4rem;
+      min-width: 0;
+      padding: 1rem 2.65rem 1rem 1rem;
+      border: 2px solid transparent;
+      border-radius: 0.75rem;
+      background: #fff;
+      color: #002855;
+      text-align: left;
+    }
+    #lab-owl-debugging-strategies .strategy-choice b { font-size: 1.125rem; line-height: 1.3; }
+    #lab-owl-debugging-strategies .strategy-choice::after {
+      content: "";
+      position: absolute;
+      top: 1.35rem;
+      right: 1.15rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-top: 2px solid #0057b8;
+      border-right: 2px solid #0057b8;
+      transform: rotate(45deg);
+    }
+    #lab-owl-debugging-strategies .strategy-choice:hover,
+    #lab-owl-debugging-strategies .strategy-choice[aria-pressed="true"] {
+      border-color: #97E152;
+      background: #edf5ff;
+    }
+    #lab-owl-debugging-strategies .strategy-choice:focus-visible { outline-color: #97E152; }
+    #lab-owl-debugging-strategies .practice-panel {
+      margin: 1.5rem auto 0;
+      border: 1px solid #bed3eb;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 40, 85, 0.10);
+    }
+    #lab-owl-debugging-strategies .practice-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 4px solid #97E152;
+      background: #002855;
+      color: #fff;
+    }
+    #lab-owl-debugging-strategies .practice-header h3 { color: #fff; }
+    #lab-owl-debugging-strategies .practice-layout { display: grid; gap: 1rem; padding: clamp(0.8rem, 3vw, 1.5rem); }
+    @media (min-width: 880px) {
+      #lab-owl-debugging-strategies .practice-layout { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+    }
+    #lab-owl-debugging-strategies :is(.practice-code, .practice-chat) { min-width: 0; }
+    #lab-owl-debugging-strategies .practice-code h3 { font-size: 16px !important; overflow-wrap: anywhere; }
+    #lab-owl-debugging-strategies .practice-code pre {
+      margin: 0.65rem 0 0;
+      overflow: auto;
+      padding: 0.85rem;
+      border-radius: 0.65rem;
+      background: #002855;
+      color: #fff;
+      tab-size: 4;
+    }
+    #lab-owl-debugging-strategies .practice-code code { font: 14px/1.6 monospace !important; }
+    #lab-owl-debugging-strategies .practice-transcript {
+      max-height: 24rem;
+      overflow: auto;
+      padding: 0.75rem;
+      border: 1px solid #d8e7f5;
+      border-radius: 0.75rem;
+      background: #f4f8fd;
+    }
+    #lab-owl-debugging-strategies .practice-message {
+      max-width: 92%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.25rem 0.8rem 0.8rem;
+      background: #fff;
+      color: #002855;
+      overflow-wrap: anywhere;
+    }
+    #lab-owl-debugging-strategies .practice-message b { display: block; margin-bottom: 0.2rem; }
+    #lab-owl-debugging-strategies .practice-message.practice-reply {
+      margin-left: auto;
+      background: #002855;
+      color: #fff;
+      border-radius: 0.8rem 0.25rem 0.8rem 0.8rem;
+    }
+    #lab-owl-debugging-strategies .practice-feedback { padding: 0.65rem 0.8rem; border-left: 4px solid #97E152; background: #f1fae9; }
+    #lab-owl-debugging-strategies .practice-feedback.is-retry { border-left-color: #a76b0e; background: #fff5e5; }
+    #lab-owl-debugging-strategies .practice-choice {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #bed3eb;
+      border-radius: 0.55rem;
+      background: #fff;
+      color: #002855;
+      text-align: left;
+    }
+    #lab-owl-debugging-strategies .practice-choice:hover:not(:disabled) { background: #edf5ff; }
+    #lab-owl-debugging-strategies .practice-choice.is-retry { border-color: #a76b0e; }
+    #lab-owl-debugging-strategies .practice-action {
+      padding: 0.5rem 0.85rem;
+      border: 1px solid #0057b8;
+      border-radius: 0.5rem;
+      background: #0057b8;
+      color: #fff;
+      font-weight: 700;
+    }
+    #lab-owl-debugging-strategies .practice-secondary { background: #fff; color: #0057b8; }
+  </style>
+</head>
+<body>
+  <div id="lab-owl-debugging-strategies">
+    <header class="banner">
+      <div class="banner-pattern" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="lab-owl-debugging-strategies-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+              <circle cx="40" cy="40" r="1" fill="#FFFFFF"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#lab-owl-debugging-strategies-pattern)"/>
+        </svg>
+      </div>
+      <div class="banner-content">
+        <div class="banner-label"><span class="banner-dot" aria-hidden="true"></span>LAB OWL</div>
+        <h1>Rubber Duck Debugging &amp; Pseudocode Reframing</h1>
+        <p>Help students explain their code and compare it with the logic they intended.</p>
+      </div>
+      <svg class="banner-wave" viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80V40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0Z" fill="#FFFFFF"/>
+      </svg>
+    </header>
+
+    <main>
+      <section aria-labelledby="rubber-duck">
+        <h2 class="section-heading" id="rubber-duck">Rubber Duck Debugging</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content flow">
+          <p>Rubber duck debugging is a well-known technique in programming. When programmers explain their code out loud, they often discover the issue themselves. In a Programming Lab session, the Peer Navigator acts as the “rubber duck” and invites the student to walk through their code step by step and explain what each part is supposed to do.</p>
+          <div class="panel lab-owl-panel flow">
+            <h3>You Might Say</h3>
+            <ul class="activity-list">
+              <li>“Walk me through what this section of your code is supposed to do.”</li>
+              <li>“Explain what should happen when the program reaches this line.”</li>
+            </ul>
+          </div>
+          <p>As the student talks through the logic, they often notice gaps in their thinking or places where the code does not match their intention.</p>
+          <p>This strategy works especially well during <strong>Locate the Block</strong> and <strong>Analyze What’s Happening</strong>.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="pseudocode">
+        <h2 class="section-heading" id="pseudocode">Pseudocode Reframing</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content flow">
+          <p>Sometimes students struggle because their code does not match the logic they intended. Pseudocode reframing asks the student to describe the logic in plain language before looking at the code.</p>
+          <div class="panel lab-owl-panel flow">
+            <h3>You Might Ask</h3>
+            <ul class="activity-list">
+              <li>“If you were explaining this to a friend, what steps should the program follow?”</li>
+              <li>“What should happen first?”</li>
+              <li>“What happens after that?”</li>
+            </ul>
+          </div>
+          <p>Once the student describes the steps, they can compare them to their code and see where the logic diverges. This strategy works well during <strong>Locate the Block</strong> and <strong>Analyze What’s Happening</strong>.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="practice-strategies">
+        <div class="practice-launch flow">
+          <h2 id="practice-strategies">Practice Both Strategies</h2>
+          <p>Choose a strategy and respond as the Peer Navigator. Each scenario has three opportunities to practice.</p>
+          <div id="strategy-options" class="strategy-options"></div>
+          <noscript><p>Enable JavaScript to use the practice simulator.</p></noscript>
+        </div>
+        <div class="practice-panel" id="strategy-simulation" hidden>
+          <header class="practice-header">
+            <div><h3 id="strategy-title"></h3><p id="practice-progress"></p></div>
+            <button id="practice-back" type="button" class="practice-action practice-secondary">Back to strategies</button>
+          </header>
+          <div class="practice-layout">
+            <div class="practice-code">
+              <h3 id="practice-filename"></h3>
+              <pre tabindex="0" aria-labelledby="practice-filename"><code id="practice-code"></code></pre>
+            </div>
+            <div class="flow practice-chat">
+              <div id="practice-transcript" class="flow practice-transcript" role="log" aria-label="Conversation" tabindex="0"></div>
+              <div class="flow" id="practice-responses"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const scenarios = {"rubberduck":{"icon":"🦆","title":"Rubber Duck Debugging","hint":"Ask the student to explain their code step-by-step","filename":"calculate_average.py","code":"def calculate_average(numbers):\n    total = 0\n    for num in numbers:\n        total = num\n    average = total / len(numbers)\n    return average\n\n# Test\ngrades = [85, 90, 78, 92, 88]\nresult = calculate_average(grades)\nprint(f\"Average: {result}\")","conversation":[{"speaker":"student","message":"Hey, I'm stuck on this function. It's supposed to calculate the average of a list of grades, but it's giving me the wrong answer. It outputs 17.6 but should be 86.6.","options":[{"text":"I see the bug! You wrote 'total = num' instead of 'total += num'.","correct":false,"feedback":"Remember, as a Peer Navigator you shouldn't directly teach or give away the answer. Guide the student to discover it themselves!"},{"text":"Walk me through what this section of your code is supposed to do, starting with the for loop.","correct":true,"feedback":"Excellent! This is classic rubber duck debugging—asking the student to verbalize their code's intended behavior."},{"text":"Have you tried using a different approach to calculate averages?","correct":false,"feedback":"While this might help eventually, the rubber duck strategy focuses on having students explain their current code to find the bug."}]},{"speaker":"student","message":"Okay, so the for loop goes through each number in the list. For each number, it... wait. It sets total to that number. Oh! It should be ADDING to total, not replacing it!","options":[{"text":"Yes, you need to use += instead of =.","correct":false,"feedback":"You're giving the answer directly. Let the student state the solution in their own words."},{"text":"Let's move on to the next part of the code.","correct":false,"feedback":"The student just had a breakthrough! Acknowledge it and let them complete their thought."},{"text":"Great observation! What change would you make to fix that?","correct":true,"feedback":"Perfect follow-up! You confirmed their discovery and prompted them to articulate the solution."}]},{"speaker":"student","message":"I need to change 'total = num' to 'total += num' so it adds each grade to the running total instead of replacing it!","options":[{"text":"Exactly! Try running it now with that change. How does explaining your code out loud help you debug?","correct":true,"feedback":"Wonderful! You validated their solution and helped them reflect on the debugging process itself—building metacognitive skills!"},{"text":"Are you sure that's the only bug?","correct":false,"feedback":"Don't create unnecessary doubt. Celebrate their success and help them reflect on the process."},{"text":"Correct. The bug is fixed now.","correct":false,"feedback":"While accurate, this misses an opportunity to reinforce the learning strategy and build debugging confidence."}]}]},"pseudocode":{"icon":"📝","title":"Pseudocode Reframing","hint":"Have the student describe their intended logic in plain language","filename":"find_largest.py","code":"def find_largest(numbers):\n    largest = 0\n    for num in numbers:\n        if num > largest:\n            largest = num\n    return largest\n\n# Test\ntemperatures = [-5, -12, -3, -8, -1]\nresult = find_largest(temperatures)\nprint(f\"Highest temp: {result}\")","conversation":[{"speaker":"student","message":"My function is supposed to find the largest number in a list, but when I test it with negative temperatures, it returns 0 even though 0 isn't in my list!","options":[{"text":"Can you show me the line where you set the initial value?","correct":false,"feedback":"This jumps straight to the code. Pseudocode reframing starts with understanding the intended logic first."},{"text":"The problem is that you initialized 'largest' to 0.","correct":false,"feedback":"As a Peer Navigator, avoid giving away the answer. Help them discover the issue through their own reasoning."},{"text":"Before we look at the code, if you were explaining this to a friend, what steps should the program follow to find the largest number?","correct":true,"feedback":"Perfect pseudocode reframing! You're asking them to describe the logic in plain language before examining the code."}]},{"speaker":"student","message":"Well, to find the largest... I would need to remember the biggest number I've seen so far. Then go through each number and if it's bigger than what I'm remembering, update what I'm remembering. At the end, whatever I'm remembering is the largest.","options":[{"text":"You should initialize the variable to negative infinity or the first element.","correct":false,"feedback":"You're teaching content directly. Let them work through the logic to discover this themselves."},{"text":"Great explanation! Now, what should you remember as 'the biggest seen so far' before you've looked at any numbers?","correct":true,"feedback":"Excellent! You're guiding them to examine a key assumption in their logic using their own pseudocode description."},{"text":"That's correct. Now let's look at your code.","correct":false,"feedback":"Don't rush past this moment. Their pseudocode reveals the key insight—help them explore it."}]},{"speaker":"student","message":"Hmm... before I've seen any numbers? I guess I can't assume it's 0 because... OH! If all my numbers are negative, then 0 would be bigger than all of them even though it's not in the list! I should start with the first number in the list instead!","options":[{"text":"Exactly! You compared your plain-language logic to your code and found where they didn't match. That's a powerful debugging technique. How would you change line 2?","correct":true,"feedback":"Excellent coaching! You validated their discovery, named the strategy they used, and prompted them to implement the fix."},{"text":"Yes, change 'largest = 0' to 'largest = numbers[0]'.","correct":false,"feedback":"Let the student articulate the solution. They've done the hard thinking—let them complete it!"},{"text":"Good job! You're done.","correct":false,"feedback":"Take the opportunity to reinforce the strategy and have them verbalize the code change."}]}]}};
+      const byId = id => document.getElementById(id);
+      const create = (tag, text, className) => {
+        const element = document.createElement(tag);
+        if (text) element.textContent = text;
+        if (className) element.className = className;
+        if (tag === 'button') element.type = 'button';
+        return element;
+      };
+      const selector = byId('strategy-options');
+      const panel = byId('strategy-simulation');
+      const transcript = byId('practice-transcript');
+      const responses = byId('practice-responses');
+      const progress = byId('practice-progress');
+      let active;
+      let currentStep;
+
+      function appendMessage(label, text, className = '') {
+        const block = create('div', '', 'practice-message ' + className);
+        block.append(create('b', label), create('p', text));
+        transcript.append(block);
+        transcript.scrollTop = transcript.scrollHeight;
+      }
+
+      function returnToStrategies() {
+        panel.hidden = true;
+        transcript.replaceChildren();
+        responses.replaceChildren();
+        active.setAttribute('aria-pressed', 'false');
+        active.focus();
+        active = null;
+      }
+
+      function showStep(sim, focus) {
+        const step = sim.conversation[currentStep];
+        progress.textContent = 'Step ' + (currentStep + 1) + ' of ' + sim.conversation.length;
+        appendMessage('Student', step.message);
+        const heading = create('h3', 'How would you respond?');
+        heading.tabIndex = -1;
+        const controls = step.options.map(option => create('button', option.text, 'practice-choice'));
+        const feedback = create('div');
+        feedback.setAttribute('role', 'status');
+        feedback.hidden = true;
+        responses.replaceChildren(heading, ...controls, feedback);
+
+        controls.forEach((control, index) => {
+          control.addEventListener('click', () => {
+            const option = step.options[index];
+            appendMessage('You (Peer Navigator)', option.text, 'practice-reply');
+            feedback.className = 'practice-feedback' + (option.correct ? '' : ' is-retry');
+            feedback.hidden = false;
+            feedback.textContent = (option.correct ? 'Great coaching! ' : 'Consider this. ') + option.feedback;
+            if (!option.correct) {
+              control.classList.add('is-retry');
+              control.disabled = true;
+              controls.find(button => !button.disabled)?.focus();
+              return;
+            }
+            controls.forEach(button => { button.disabled = true; });
+            const last = currentStep === sim.conversation.length - 1;
+            const next = create('button', last ? 'Finish scenario' : 'Continue', 'practice-action');
+            next.addEventListener('click', () => {
+              if (!last) {
+                currentStep += 1;
+                showStep(sim, true);
+                return;
+              }
+              progress.textContent = 'Scenario complete';
+              const title = create('h3', 'Scenario complete');
+              title.tabIndex = -1;
+              const again = create('button', 'Back to strategies', 'practice-action');
+              again.addEventListener('click', returnToStrategies);
+              responses.replaceChildren(title, create('p', 'Choose either strategy to practice again.'), again);
+              title.focus();
+            });
+            responses.append(next);
+            next.focus();
+          });
+        });
+        if (focus) heading.focus();
+      }
+
+      for (const sim of Object.values(scenarios)) {
+        const button = create('button', '', 'strategy-choice');
+        button.setAttribute('aria-controls', 'strategy-simulation');
+        button.setAttribute('aria-pressed', 'false');
+        button.append(create('b', sim.title), create('span', sim.hint));
+        button.addEventListener('click', () => {
+          if (active) active.setAttribute('aria-pressed', 'false');
+          active = button;
+          active.setAttribute('aria-pressed', 'true');
+          currentStep = 0;
+          byId('strategy-title').textContent = sim.title;
+          byId('practice-filename').textContent = sim.filename;
+          byId('practice-code').textContent = sim.code;
+          transcript.replaceChildren();
+          panel.hidden = false;
+          showStep(sim, true);
+        });
+        selector.append(button);
+      }
+      byId('practice-back').addEventListener('click', returnToStrategies);
+    })();
+  </script>
+</body>
+</html>
