@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>When the Student Lacks the Concept</title>
+  <style>
+    body { margin: 0; }
+    #lab-owl-concept-gap, #lab-owl-concept-gap * {
+      box-sizing: border-box;
+      font-family: Arial, "Liberation Sans", sans-serif !important;
+    }
+    #lab-owl-concept-gap {
+      color: #000000;
+      background: #FFFFFF;
+      font-size: 16px !important;
+      line-height: 1.55;
+    }
+    #lab-owl-concept-gap h1, #lab-owl-concept-gap h2, #lab-owl-concept-gap h3,
+    #lab-owl-concept-gap p, #lab-owl-concept-gap ul { margin: 0; }
+    #lab-owl-concept-gap :is(p, li, .banner-label) { font-size: 16px !important; }
+    #lab-owl-concept-gap h1 { font-size: 36px !important; line-height: 1.1; }
+    #lab-owl-concept-gap h2 { font-size: 24px !important; line-height: 1.2; color: #002855; }
+    #lab-owl-concept-gap h3 { font-size: 20px !important; line-height: 1.25; color: #002855; }
+    #lab-owl-concept-gap strong { color: #0070F0; }
+    #lab-owl-concept-gap .banner {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #002855, #0070F0);
+      color: #FFFFFF;
+      text-align: center;
+    }
+    #lab-owl-concept-gap .banner-pattern { position: absolute; inset: 0; opacity: 0.05; pointer-events: none; }
+    #lab-owl-concept-gap .banner-content { position: relative; padding: 5rem 1.5rem; }
+    #lab-owl-concept-gap .banner-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 999px;
+      background: rgba(151, 225, 82, 0.2);
+      color: #97E152;
+      font-weight: 500;
+    }
+    #lab-owl-concept-gap .banner-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #97E152; }
+    #lab-owl-concept-gap .banner p { max-width: 48rem; margin: 1.5rem auto 0; color: rgba(255, 255, 255, 0.95); }
+    #lab-owl-concept-gap .banner-wave { display: block; width: 100%; margin-bottom: -1px; }
+    #lab-owl-concept-gap main { max-width: 72rem; padding: 0 1.5rem 2rem; margin: 0 auto; }
+    #lab-owl-concept-gap main > section { padding-block: 0.75rem; }
+    #lab-owl-concept-gap main > section + section { padding-top: 2.75rem; }
+    #lab-owl-concept-gap .section-heading { text-align: center; }
+    #lab-owl-concept-gap .section-divider {
+      width: 5rem;
+      height: 3px;
+      margin: 0.75rem auto 1.25rem;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #002855 0%, #0070F0 50%, #97E152 100%);
+    }
+    #lab-owl-concept-gap .content { max-width: 48rem; margin-inline: auto; }
+    #lab-owl-concept-gap .flow > * + * { margin-top: 0.9rem; }
+    #lab-owl-concept-gap .flow > * + .panel,
+    #lab-owl-concept-gap .flow > .panel + * { margin-top: 1.25rem; }
+    #lab-owl-concept-gap .panel {
+      padding: 1.5rem;
+      border-left: 4px solid #0070F0;
+      border-radius: 1rem;
+      background: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 40, 85, 0.1);
+    }
+    #lab-owl-concept-gap .lab-owl-panel { border-left-color: #97E152; }
+    #lab-owl-concept-gap .activity-list { padding-left: 1.4rem; }
+    #lab-owl-concept-gap .activity-list li + li { margin-top: 0.6rem; }
+    #lab-owl-concept-gap .activity-list li::marker { color: #002855; }
+    @media (min-width: 768px) {
+      #lab-owl-concept-gap h1 { font-size: 48px !important; }
+      #lab-owl-concept-gap h2 { font-size: 30px !important; }
+    }
+    @media (min-width: 1024px) {
+      #lab-owl-concept-gap h1 { font-size: 60px !important; }
+    }
+    #lab-owl-concept-gap .comparison { max-width: 60rem; margin-inline: auto; }
+    #lab-owl-concept-gap .comparison-grid { display: grid; gap: 1rem; }
+    #lab-owl-concept-gap .steps { margin-block: 0; padding: 0; list-style: none; }
+    #lab-owl-concept-gap .steps > li {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+      gap: clamp(0.65rem, 2vw, 1.25rem);
+      padding-block: 1.15rem;
+    }
+    #lab-owl-concept-gap .steps > li + li { border-top: 1px solid #d8e7f5; }
+    #lab-owl-concept-gap .step-number {
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: #002855;
+      color: #fff;
+      font-weight: 700;
+    }
+    #lab-owl-concept-gap .step-content h3 { padding-top: 0.15rem; }
+    @media (min-width: 720px) {
+      #lab-owl-concept-gap .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    #lab-owl-concept-gap .comparison-grid article { display: flex; flex-direction: column; }
+    #lab-owl-concept-gap .next-move {
+      margin-top: auto !important;
+      padding-top: 0.85rem;
+      border-top: 1px solid #bed3eb;
+      color: #002855;
+      font-weight: 700;
+    }
+    #lab-owl-concept-gap .comparison-grid ul { margin-bottom: 0.85rem; }
+    #lab-owl-concept-gap .prompt-label { color: #002855; font-weight: 700; }
+    #lab-owl-concept-gap .steps .prompt-label + ul { margin-top: 0.45rem; }
+    #lab-owl-concept-gap blockquote {
+      margin-inline: 0;
+      margin-bottom: 0;
+      padding: 0.85rem 1rem;
+      border-left: 4px solid #97E152;
+      border-radius: 0.25rem;
+      background: #edf5ff;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-owl-concept-gap">
+    <header class="banner">
+      <div class="banner-pattern" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="lab-owl-concept-gap-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+              <circle cx="40" cy="40" r="1" fill="#FFFFFF"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#lab-owl-concept-gap-pattern)"/>
+        </svg>
+      </div>
+      <div class="banner-content">
+        <div class="banner-label"><span class="banner-dot" aria-hidden="true"></span>LAB OWL</div>
+        <h1>When the Student Lacks the Concept</h1>
+        <p>Help students identify what’s unclear and find the right support.</p>
+      </div>
+      <svg class="banner-wave" viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80V40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0Z" fill="#FFFFFF"/>
+      </svg>
+    </header>
+
+    <main>
+      <section aria-labelledby="concept-overview">
+        <h2 id="concept-overview" class="section-heading">Recognize the Concept Gap</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content flow">
+          <p>Sometimes a student is stuck because they do not fully understand an underlying concept the code relies on. The code may look confusing because they’re missing a foundational piece of how it works.</p>
+          <p>Course resources can be hard to search or reference in the middle of a lab. Even then, your role is to support the student’s thinking process. <strong>Peer Navigators do not teach or tutor course content or provide direct answers.</strong> Help the student identify the gap, reconnect with course resources, and prepare a clear question for the Course Instructor if needed.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="coaching-check">
+        <h2 id="coaching-check" class="section-heading">A Simple Coaching Check</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="comparison flow">
+          <p>Before you decide how to proceed, ask yourself whether the student is stuck on the debugging process or the underlying concept.</p>
+          <div class="comparison-grid">
+            <article class="panel flow">
+              <h3>A Process Problem Sounds Like</h3>
+              <ul class="activity-list">
+                <li>“My code runs but the output is wrong.”</li>
+                <li>“I keep getting an error and I don’t know how to interpret it.”</li>
+                <li>“I’ve tried a few things but I can’t tell what changed.”</li>
+              </ul>
+              <p class="next-move">Use Lab Owl to guide debugging.</p>
+            </article>
+            <article class="panel lab-owl-panel flow">
+              <h3>A Concept Problem Sounds Like</h3>
+              <ul class="activity-list">
+                <li>“I don’t understand what this code is doing.”</li>
+                <li>“I don’t know what this function means.”</li>
+                <li>“I’ve never really understood loops, lists, or conditionals.”</li>
+              </ul>
+              <p class="next-move">Use the redirecting steps below.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="redirecting-steps">
+        <h2 id="redirecting-steps" class="section-heading">Guide the Student Through a Concept Gap</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <ol class="content steps" role="list">
+          <li>
+            <span class="step-number" aria-hidden="true">1</span>
+            <div class="step-content flow">
+              <h3>Identify the Concept Gap</h3>
+              <p>Start by helping the student name what feels unclear. Their description keeps the conversation student-driven and helps you avoid sliding into teaching.</p>
+              <p class="prompt-label">You might ask</p>
+              <ul class="activity-list">
+                <li>“What part of this feels confusing right now?”</li>
+                <li>“Is there a specific term or concept that feels unfamiliar?”</li>
+                <li>“What line of code feels the fuzziest?”</li>
+              </ul>
+              <p>Let the student describe the gap in their own words. Your questions help them get specific about what they need.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number" aria-hidden="true">2</span>
+            <div class="step-content flow">
+              <h3>Guide Them Back to Course Resources</h3>
+              <p>Help the student locate the concept in their course material, other course resources, or the Programming Center.</p>
+              <p class="prompt-label">You might ask</p>
+              <ul class="activity-list">
+                <li>“Where in the course did you first see this concept?”</li>
+                <li>“Does the lab include an example or earlier practice problem that uses the same idea?”</li>
+                <li>“Can we find a similar example in a previous lesson?”</li>
+              </ul>
+              <p>Even when resources are difficult to navigate, helping the student practice finding information builds independence.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number" aria-hidden="true">3</span>
+            <div class="step-content flow">
+              <h3>Use Concept Recall</h3>
+              <p>Once the student finds the resource, invite them to explain it in their own words. If they struggle, encourage them to slow down, reread, and talk it through.</p>
+              <p class="prompt-label">You might ask</p>
+              <ul class="activity-list">
+                <li>“How would you describe this concept in plain language?”</li>
+                <li>“What is this section saying the code should do?”</li>
+                <li>“What example do you see here that looks similar to your lab?”</li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <span class="step-number" aria-hidden="true">4</span>
+            <div class="step-content flow">
+              <h3>Connect the Concept Back to Their Code</h3>
+              <p>After the student reconnects with the concept, help them apply it to the code they’re working with.</p>
+              <p class="prompt-label">You might ask</p>
+              <ul class="activity-list">
+                <li>“Where do you see that concept showing up in your program?”</li>
+                <li>“Which line is using that idea?”</li>
+                <li>“What do you think this part is trying to accomplish?”</li>
+              </ul>
+              <p>“Oh, that part is the loop” or “That line is checking the condition” shows progress, even if the code still needs work.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number" aria-hidden="true">5</span>
+            <div class="step-content flow">
+              <h3>Redirect to the Course Instructor When Needed</h3>
+              <p>If the student still needs direct instruction or clarification after reviewing the learning resources, help them prepare a question for the Course Instructor.</p>
+              <blockquote>“It sounds like the concept itself needs clarification. Your Course Instructor is the best person to help with that. Let’s make sure you have a really clear question to bring to them.”</blockquote>
+              <p class="prompt-label">Help them prepare by asking</p>
+              <ul class="activity-list">
+                <li>“What concept do you need clarified?”</li>
+                <li>“What part of the lab shows where you got stuck?”</li>
+                <li>“What have you already tried or tested?”</li>
+                <li>“What would you like the instructor to explain or confirm?”</li>
+              </ul>
+              <p>These details turn “I’m confused” into a specific, actionable question.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="concept-success">
+        <h2 id="concept-success" class="section-heading">What Success Looks Like</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="content panel lab-owl-panel flow">
+          <p>The student can name what they do not understand, locate the relevant resource, and either reconnect with the concept or prepare a focused question for their instructor. These are meaningful coaching outcomes, even when the student needs more time or instruction to master the concept.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
