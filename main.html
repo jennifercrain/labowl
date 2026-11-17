@@ -1,0 +1,348 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programming Labs</title>
+  <style>
+    body { margin: 0; }
+    #programming-labs, #programming-labs * {
+      box-sizing: border-box;
+      font-family: Arial, "Liberation Sans", sans-serif !important;
+    }
+    #programming-labs {
+      color: #000000;
+      background: #FFFFFF;
+      font-size: 16px !important;
+      line-height: 1.55;
+    }
+    #programming-labs h1, #programming-labs h2, #programming-labs h3,
+    #programming-labs p, #programming-labs ul { margin: 0; }
+    #programming-labs :is(p, li, .banner-label) { font-size: 16px !important; }
+    #programming-labs h1 { font-size: 36px !important; line-height: 1.1; }
+    #programming-labs h2 { font-size: 24px !important; line-height: 1.2; color: #002855; }
+    #programming-labs h3 { font-size: 20px !important; line-height: 1.25; color: #002855; }
+    #programming-labs strong { color: #0070F0; }
+    #programming-labs .banner {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #002855, #0070F0);
+      color: #FFFFFF;
+      text-align: center;
+    }
+    #programming-labs .banner-pattern { position: absolute; inset: 0; opacity: 0.05; pointer-events: none; }
+    #programming-labs .banner-content { position: relative; padding: 5rem 1.5rem; }
+    #programming-labs .banner-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 999px;
+      background: rgba(151, 225, 82, 0.2);
+      color: #97E152;
+      font-weight: 500;
+    }
+    #programming-labs .banner-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #97E152; }
+    #programming-labs .banner p { max-width: 48rem; margin: 1.5rem auto 0; color: rgba(255, 255, 255, 0.95); }
+    #programming-labs .banner-wave { display: block; width: 100%; margin-bottom: -1px; }
+    #programming-labs main { max-width: 72rem; padding: 0 1.5rem 2rem; margin: 0 auto; }
+    #programming-labs main > section { padding-block: 0.75rem; }
+    #programming-labs main > section + section { padding-top: 2.75rem; }
+    #programming-labs .section-heading { text-align: center; }
+    #programming-labs .section-divider {
+      width: 5rem;
+      height: 3px;
+      margin: 0.75rem auto 1.25rem;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #002855 0%, #0070F0 50%, #97E152 100%);
+    }
+    #programming-labs .content { max-width: 48rem; margin-inline: auto; }
+    #programming-labs .flow > * + * { margin-top: 0.9rem; }
+    #programming-labs .flow > * + .panel,
+    #programming-labs .flow > .panel + * { margin-top: 1.25rem; }
+    #programming-labs .panel {
+      padding: 1.5rem;
+      border-left: 4px solid #0070F0;
+      border-radius: 1rem;
+      background: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 40, 85, 0.1);
+    }
+    #programming-labs .lab-owl-panel { border-left-color: #97E152; }
+    #programming-labs .activity-list { padding-left: 1.4rem; }
+    #programming-labs .activity-list li + li { margin-top: 0.6rem; }
+    #programming-labs .activity-list li::marker { color: #002855; }
+    @media (min-width: 768px) {
+      #programming-labs h1 { font-size: 48px !important; }
+      #programming-labs h2 { font-size: 30px !important; }
+    }
+    @media (min-width: 1024px) {
+      #programming-labs h1 { font-size: 60px !important; }
+    }
+    #programming-labs .lab-chat-grid {
+      display: grid;
+      gap: 1.25rem;
+      margin-block: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      #programming-labs .lab-chat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    #programming-labs .lab-chat-card {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+      border: 1px solid #c4d7ec;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 40, 85, 0.1);
+    }
+    #programming-labs .lab-chat-coaching { border-left: 4px solid #97E152; }
+    #programming-labs .lab-chat-header,
+    #programming-labs .lab-chat-result { padding: 1rem clamp(0.75rem, 2.3vw, 1.5rem); }
+    #programming-labs .lab-chat-header { background: #edf5ff; }
+    #programming-labs .lab-chat-header p { margin-top: 0.25rem; }
+    #programming-labs .lab-chat-coaching .lab-chat-header {
+      background: linear-gradient(135deg, #002855, #0070F0);
+      color: #fff;
+    }
+    #programming-labs .lab-chat-coaching .lab-chat-header h3 { color: inherit; }
+    #programming-labs .lab-chat-thread {
+      display: grid;
+      align-content: start;
+      gap: 0.75rem;
+      margin: 0;
+      padding: 1.25rem clamp(0.75rem, 2.3vw, 1.5rem);
+      list-style: none;
+    }
+    #programming-labs .lab-chat-message {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+    #programming-labs .lab-chat-reply { flex-direction: row-reverse; }
+    #programming-labs .lab-chat-avatar {
+      flex: 0 0 2rem;
+      display: grid;
+      place-items: center;
+      height: 2rem;
+      border-radius: 50%;
+      background: #002855;
+      color: #fff;
+      font-weight: bold;
+    }
+    #programming-labs .lab-chat-bubble {
+      min-width: 0;
+      padding: 0.6rem 0.85rem;
+      border-radius: 0.25rem 0.85rem 0.85rem;
+      background: #e8f3ff;
+      color: #002855;
+      overflow-wrap: anywhere;
+    }
+    #programming-labs .lab-chat-reply .lab-chat-bubble {
+      border-radius: 0.85rem 0.25rem 0.85rem 0.85rem;
+      background: #f3f6fa;
+    }
+    #programming-labs .lab-chat-coaching .lab-chat-reply .lab-chat-bubble {
+      background: #002855;
+      color: #fff;
+    }
+    #programming-labs .lab-chat-bubble code {
+      font-family: monospace !important;
+      background: rgba(70, 177, 239, 0.2);
+      padding: 0.05em 0.2em;
+      border-radius: 0.2rem;
+    }
+    #programming-labs .lab-chat-result {
+      border-top: 1px solid #c4d7ec;
+      background: #f3f6fa;
+    }
+    #programming-labs .lab-chat-coaching .lab-chat-result { background: #f1fae9; }
+    #programming-labs .lab-chat-result h4 { margin: 0 0 0.3rem; color: #002855; }
+    #programming-labs .lab-chat-sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      clip-path: inset(50%);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div id="programming-labs">
+    <header class="banner">
+      <div class="banner-pattern" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="programming-labs-pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+              <circle cx="40" cy="40" r="1" fill="#FFFFFF"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#programming-labs-pattern)"/>
+        </svg>
+      </div>
+      <div class="banner-content">
+        <div class="banner-label"><span class="banner-dot" aria-hidden="true"></span>LAB OWL</div>
+        <h1>Programming Labs</h1>
+        <p>Guide students through debugging while they work on coding labs and assignments.</p>
+      </div>
+      <svg class="banner-wave" viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80V40C240 80 480 0 720 40C960 80 1200 0 1440 40V80H0Z" fill="#FFFFFF"/>
+      </svg>
+    </header>
+
+<main>
+  <section aria-labelledby="overview">
+    <h2 class="section-heading" id="overview">Why Programming Labs Matter</h2>
+    <div class="section-divider" aria-hidden="true"></div>
+    <div class="content flow">
+      <p>In many courses, our traditional study strategies work well to help students organize ideas and process information. Programming can feel different. When a student is working in zyBooks or another coding environment, the immediate challenge is often figuring out what to do when their code behaves differently than they expected.</p>
+      <p>The student is already in the middle of the task. They’re running code, interpreting results, and trying to understand what went wrong. Debugging is a real-time thinking process.</p>
+      <div class="panel flow">
+        <h3>When Something Breaks</h3>
+        <p>When something breaks, students may react quickly and lose track of what each test tells them. You might see a student:</p>
+        <ul class="activity-list">
+          <li>Change several things at once.</li>
+          <li>Run the program again without predicting what will happen.</li>
+          <li>Skip reading the full error message.</li>
+          <li>Lose track of what they’ve already tested.</li>
+        </ul>
+        <p>These are signs the student may need a more deliberate debugging process.</p>
+      </div>
+      <p>Programming Labs give Peer Navigators a structured way to guide a student’s thinking while they work through coding labs or assignments.</p>
+      <p>These sessions emphasize <strong>debugging literacy</strong>, the ability to observe what code is doing, test ideas deliberately, and use the results to decide what to try next.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="lab-chat-comparison">
+    <h2 class="section-heading" id="lab-chat-comparison">Two Approaches to Helping Students</h2>
+    <div class="section-divider" aria-hidden="true"></div>
+    <div class="content flow">
+      <p>See the difference between traditional tutoring and programming coaching.</p>
+      <div class="panel flow">
+        <h3>The Scenario</h3>
+        <p>A student is working on a Python lab. Their code runs but produces the wrong output. They've been staring at it for 20 minutes and just changed three things at once without knowing which one might fix it.</p>
+      </div>
+    </div>
+    <div class="lab-chat-grid">
+      <article class="lab-chat-card lab-chat-tutoring" aria-labelledby="lab-chat-tutoring">
+        <header class="lab-chat-header">
+          <h3 id="lab-chat-tutoring">Traditional Tutoring</h3>
+          <p>Focus: Teaching the content</p>
+        </header>
+        <ol class="lab-chat-thread" role="list">
+          <li class="lab-chat-message">
+            <span class="lab-chat-avatar" aria-hidden="true">S</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Student: </span>"What's the problem with my code?"</p>
+          </li>
+          <li class="lab-chat-message lab-chat-reply">
+            <span class="lab-chat-avatar" aria-hidden="true">T</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Tutor: </span>"It's not giving the right answer."</p>
+          </li>
+          <li class="lab-chat-message">
+            <span class="lab-chat-avatar" aria-hidden="true">S</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Student: </span>"My loop is wrong, right?"</p>
+          </li>
+          <li class="lab-chat-message lab-chat-reply">
+            <span class="lab-chat-avatar" aria-hidden="true">T</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Tutor: </span>"Use <code>range(len(list))</code> here and <code>+=</code> on line 12."</p>
+          </li>
+          <li class="lab-chat-message">
+            <span class="lab-chat-avatar" aria-hidden="true">S</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Student: </span>"Okay, got it."</p>
+          </li>
+        </ol>
+        <div class="lab-chat-result">
+          <h4>The Result</h4>
+          <p>Code works, but the student didn't learn <em>why</em> it was broken or how to find similar issues next time.</p>
+        </div>
+      </article>
+      <article class="lab-chat-card lab-chat-coaching" aria-labelledby="lab-chat-coaching">
+        <header class="lab-chat-header">
+          <h3 id="lab-chat-coaching">Programming Coaching</h3>
+          <p>Focus: Building thinking process</p>
+        </header>
+        <ol class="lab-chat-thread" role="list">
+          <li class="lab-chat-message">
+            <span class="lab-chat-avatar" aria-hidden="true">S</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Student: </span>"Before I change anything, what should my code do?"</p>
+          </li>
+          <li class="lab-chat-message lab-chat-reply">
+            <span class="lab-chat-avatar" aria-hidden="true">P</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Peer Navigator: </span>"Good question! What do you <em>expect</em> it to do?"</p>
+          </li>
+          <li class="lab-chat-message">
+            <span class="lab-chat-avatar" aria-hidden="true">S</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Student: </span>"Add up all the numbers in the list."</p>
+          </li>
+          <li class="lab-chat-message lab-chat-reply">
+            <span class="lab-chat-avatar" aria-hidden="true">P</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Peer Navigator: </span>"And what's it <em>actually</em> doing instead?"</p>
+          </li>
+          <li class="lab-chat-message">
+            <span class="lab-chat-avatar" aria-hidden="true">S</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Student: </span>"Only giving me the last number."</p>
+          </li>
+          <li class="lab-chat-message lab-chat-reply">
+            <span class="lab-chat-avatar" aria-hidden="true">P</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Peer Navigator: </span>"Walk me through what happens each loop iteration—focus on the total variable."</p>
+          </li>
+          <li class="lab-chat-message">
+            <span class="lab-chat-avatar" aria-hidden="true">S</span>
+            <p class="lab-chat-bubble"><span class="lab-chat-sr">Student: </span>"Oh! I'm using <code>=</code> instead of <code>+=</code>. It overwrites instead of adding!"</p>
+          </li>
+        </ol>
+        <div class="lab-chat-result">
+          <h4>The Result</h4>
+          <p>Student discovered the bug themselves and built a mental model for finding similar issues independently.</p>
+        </div>
+      </article>
+    </div>
+    <div class="content panel lab-owl-panel flow">
+      <h3>The Key Difference</h3>
+      <p>Debugging literacy isn't about teaching Python—it's about teaching students to <strong>slow down, form hypotheses, and test systematically.</strong> The goal is to build a thinking process they can use every time something breaks.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="navigator-role">
+    <h2 class="section-heading" id="navigator-role">The Role of the Peer Navigator</h2>
+    <div class="section-divider" aria-hidden="true"></div>
+    <div class="content flow">
+      <p>Programming Labs follow the philosophy of peer coaching. Help the student slow down, observe what’s happening, and think through the problem step by step. Keep the student thinking, even when you spot a potential fix right away.</p>
+      <div class="panel flow">
+        <h3>Guide the Student’s Thinking</h3>
+        <ul class="activity-list">
+          <li>Clarify the problem.</li>
+          <li>Interpret what they’re seeing.</li>
+          <li>Test ideas intentionally.</li>
+          <li>Reflect on what worked.</li>
+        </ul>
+        <p>Leave the code and decisions in the student’s hands. Teaching programming concepts, correcting syntax, rewriting code, and providing direct solutions fall outside the Peer Navigator role.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="lab-owl">
+    <h2 class="section-heading" id="lab-owl">The Lab Owl Framework</h2>
+    <div class="section-divider" aria-hidden="true"></div>
+    <div class="content flow">
+      <p>Lab Owl is the coaching framework Peer Navigators use to guide debugging conversations during Programming Labs. When students feel overwhelmed or unsure where to start, the framework gives the conversation a clear direction and helps the student decide what to test next.</p>
+      <div class="panel lab-owl-panel flow">
+        <h3>Lab Owl Helps Students</h3>
+        <ul class="activity-list">
+          <li>Identify where a problem begins.</li>
+          <li>Observe what their program is doing.</li>
+          <li>Isolate one variable at a time to test.</li>
+          <li>Recognize patterns in outputs.</li>
+          <li>Build independent debugging habits.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+  </div>
+</body>
+</html>
